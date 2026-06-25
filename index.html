@@ -94,7 +94,7 @@
             </select>
         </div>
         <div class="form-group"><label for="fileInput">Select Image File</label><input type="file" id="fileInput" accept="image/*"></div>
-        <button onclick="uploadPhoto()">Upload Photo</button>
+        <button id="uploadBtn" onclick="uploadPhoto()">Upload Photo</button>
     </div>
 </div>
 
@@ -147,7 +147,9 @@
 </div>
 
 <script>
-    const API_BASE_URL = window.location.origin;
+    // 💡 ፋይሉንም ሊንኩንም በአንድ ላይ የሚያገናኝ አዲሱ መስመር
+    const API_BASE_URL = "https://wasa-pictures.onrender.com";
+
     let allPhotos = [];
     function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
     function toggleBookingModal() { document.getElementById('bookingModal').classList.toggle('show'); }
@@ -196,15 +198,43 @@
         const title = document.getElementById('titleInput').value.trim();
         const category = document.getElementById('categoryInput').value;
         const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        
         if(!password || !title || fileInput.files.length === 0) { alert("All fields are required!"); return; }
+        
         const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+
+        uploadBtn.innerText = "Uploading... ⏳";
+        uploadBtn.disabled = true;
+
         try {
             const res = await fetch(`${API_BASE_URL}/photos`, {
-                method: "POST", headers: { "Content-Type": file.type, "X-Photo-Title": title, "X-Photo-Category": category, "X-Admin-Password": password }, body: file
+                method: "POST", 
+                headers: { 
+                    "X-Photo-Title": title, 
+                    "X-Photo-Category": category, 
+                    "X-Admin-Password": password 
+                }, 
+                body: formData
             });
-            if(res.ok) { document.getElementById('titleInput').value = ""; fileInput.value = ""; toggleMenu(); loadPhotos(); } 
-            else { alert("Upload failed. Check password."); }
-        } catch (err) { alert("Connection error."); }
+            if(res.ok) { 
+                document.getElementById('titleInput').value = ""; 
+                fileInput.value = ""; 
+                toggleMenu(); 
+                loadPhotos(); 
+            } 
+            else { 
+                const errData = await res.json();
+                alert("Upload failed: " + (errData.detail || "Check password")); 
+            }
+        } catch (err) { 
+            alert("Connection error."); 
+        } finally {
+            uploadBtn.innerText = "Upload Photo";
+            uploadBtn.disabled = false;
+        }
     }
 
     async function deletePhoto(url) {
