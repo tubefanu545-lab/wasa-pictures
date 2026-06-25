@@ -28,7 +28,7 @@ ADMIN_PASSWORD = "wasa"
 cloudinary.config( 
   cloud_name = "dytizzbeg", 
   api_key = "239362398592469", 
-  api_secret = "<INSERT_API_SECRET>",  # <-- እዚህ ላይ እውነተኛውን API Secret አስገባ
+  api_secret = "INSERT_API_SECRET",  # <-- እዚህ ላይ እውነተኛውን API Secret አስገባ
   secure = True
 )
 
