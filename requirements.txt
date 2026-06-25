@@ -2,3 +2,4 @@ fastapi
 httpx
 cloudinary
 python-multipart
+uvicorn
