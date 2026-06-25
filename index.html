@@ -13,70 +13,35 @@
             --text-light: #555555;
             --border-color: rgba(0,0,0,0.1);
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-
-        body {
-            color: var(--text-color);
-            padding: 40px 20px;
-            min-height: 100vh;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
+        body { color: var(--text-color); padding: 40px 20px; min-height: 100vh; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .container { max-width: 1200px; margin: 0 auto; }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid rgba(255,255,255,0.3);
-            padding: 15px 25px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-        }
-
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.3); padding: 15px 25px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: 12px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
         .header-right { display: flex; align-items: center; gap: 15px; }
         .hamburger-btn { background: none; border: none; font-size: 1.8rem; color: #ffffff; cursor: pointer; }
         h1 { font-size: 2.5rem; color: #ffffff; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-
         .status-badge { display: flex; align-items: center; gap: 8px; font-weight: 600; padding: 8px 16px; border-radius: 20px; background: #ffebee; color: #c62828; }
         .status-badge.online { background: #e8f5e9; color: #2e7d32; }
         .status-dot { width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; }
         .status-badge.online .status-dot { background-color: #2e7d32; box-shadow: 0 0 8px #4caf50; }
-
         .open-booking-btn { background-color: #e73c7e; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; border: none; font-size: 0.95rem; transition: background 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .open-booking-btn:hover { background-color: #b9265f; }
-
         .filter-container { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; flex-wrap: wrap; }
         .filter-btn { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 0.95rem; width: auto; transition: all 0.2s; }
         .filter-btn.active, .filter-btn:hover { background: var(--primary-color); border-color: var(--primary-color); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-
         .sidebar { position: fixed; top: 0; left: -380px; width: 350px; height: 100%; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 4px 0 20px rgba(0,0,0,0.3); z-index: 1000; transition: left 0.3s ease; padding: 30px; overflow-y: auto; }
         .sidebar.open { left: 0; }
         .close-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-light); cursor: pointer; float: right; }
         .sidebar-section { margin-top: 40px; margin-bottom: 30px; }
         .sidebar h2 { margin-bottom: 20px; font-size: 1.3rem; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
-        
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 999; display: none; }
         .overlay.show { display: block; }
-
         .booking-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 1500; display: none; justify-content: center; align-items: center; padding: 20px; }
         .booking-modal.show { display: flex; }
         .booking-content { background: white; border-radius: 16px; width: 100%; max-width: 750px; display: grid; grid-template-columns: 1fr 1.2fr; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3); position: relative; animation: popIn 0.3s ease; }
-        
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
         .contact-info-panel { background: linear-gradient(135deg, #00796b, #004d40); color: white; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; }
         .contact-info-panel h3 { font-size: 1.6rem; margin-bottom: 15px; }
         .contact-info-panel p { font-size: 0.9rem; opacity: 0.85; line-height: 1.5; }
@@ -84,22 +49,16 @@
         .info-item { display: flex; flex-direction: column; gap: 4px; }
         .info-item span:first-child { font-weight: bold; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; }
         .info-item span:last-child { font-size: 1rem; }
-
         .booking-form-panel { padding: 40px 30px; overflow-y: auto; max-height: 85vh; }
         .booking-form-panel h3 { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 20px; }
         .close-popup { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 1.4rem; color: #888; cursor: pointer; }
-
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 8px; background: #fafafa; font-size: 0.95rem; }
-        .form-group textarea { resize: vertical; min-height: 60px; }
-        
         button { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-
         .gallery-panel h2 { margin-bottom: 20px; font-size: 1.5rem; display: flex; justify-content: space-between; align-items: center; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
         .photo-count { font-size: 1rem; color: #ffffff; background: rgba(0, 121, 107, 0.6); padding: 4px 12px; border-radius: 12px; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; margin-bottom: 50px;}
-
         .photo-card { position: relative; background: var(--card-bg); backdrop-filter: blur(5px); border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.25); transition: transform 0.3s; }
         .photo-card:hover { transform: translateY(-8px); }
         .photo-img-wrapper { width: 100%; height: 200px; background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
@@ -108,26 +67,12 @@
         .photo-details { display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
         .photo-title { font-weight: 600; font-size: 1.1rem; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .photo-tag { font-size: 0.8rem; color: var(--primary-color); background: rgba(0, 121, 107, 0.1); padding: 2px 8px; border-radius: 10px; width: max-content; font-weight: 600; }
-
         .delete-btn { background-color: #e53935; color: white; border: none; padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; width: auto; flex-shrink: 0; }
-        .delete-btn:hover { background-color: #b71c1c; }
-
-        .skeleton-card { background: rgba(255, 255, 255, 0.6); border-radius: 12px; height: 280px; overflow: hidden; padding: 0; position: relative; }
-        .skeleton-img { height: 200px; background: #e0e0e0; }
-        .skeleton-text-1 { height: 18px; background: #e0e0e0; margin: 15px 15px 8px 15px; width: 60%; border-radius: 4px; }
-        .skeleton-text-2 { height: 14px; background: #e0e0e0; margin: 0 15px; width: 35%; border-radius: 4px; }
-        .shimmer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); animation: loadingPulse 1.5s infinite; }
-        @keyframes loadingPulse { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
         .image-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 2000; display: none; justify-content: center; align-items: center; }
         .image-modal.show { display: flex; }
         .modal-content { max-width: 90%; max-height: 85%; border-radius: 8px; }
         .close-modal-btn { position: absolute; top: 20px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; width: auto; }
-
-        @media (max-width: 650px) {
-            .booking-content { grid-template-columns: 1fr; }
-            .contact-info-panel { padding: 25px; }
-        }
+        @media (max-width: 650px) { .booking-content { grid-template-columns: 1fr; } .contact-info-panel { padding: 25px; } }
     </style>
 </head>
 <body>
@@ -135,19 +80,11 @@
 <div id="sidebarOverlay" class="overlay" onclick="toggleMenu()"></div>
 <div id="sidebarMenu" class="sidebar">
     <button class="close-btn" onclick="toggleMenu()">✕</button>
-    
     <div class="sidebar-section">
         <h2>Admin Authentication</h2>
-        <div class="form-group">
-            <label for="passwordInput">Admin Password</label>
-            <input type="password" id="passwordInput" placeholder="Enter your password">
-        </div>
-        
+        <div class="form-group"><label for="passwordInput">Admin Password</label><input type="password" id="passwordInput" placeholder="Enter password"></div>
         <h2>Upload Your Image</h2>
-        <div class="form-group">
-            <label for="titleInput">Title</label>
-            <input type="text" id="titleInput" placeholder="e.g., Abebe's Wedding">
-        </div>
+        <div class="form-group"><label for="titleInput">Title</label><input type="text" id="titleInput" placeholder="e.g., Abebe's Wedding"></div>
         <div class="form-group">
             <label for="categoryInput">Choose Category</label>
             <select id="categoryInput">
@@ -156,10 +93,7 @@
                 <option value="Kiristina">Kiristina</option>
             </select>
         </div>
-        <div class="form-group">
-            <label for="fileInput">Select Image File</label>
-            <input type="file" id="fileInput" accept="image/*">
-        </div>
+        <div class="form-group"><label for="fileInput">Select Image File</label><input type="file" id="fileInput" accept="image/*"></div>
         <button onclick="uploadPhoto()">Upload Photo</button>
     </div>
 </div>
@@ -167,186 +101,92 @@
 <div id="bookingModal" class="booking-modal">
     <div class="booking-content">
         <button class="close-popup" onclick="toggleBookingModal()">✕</button>
-        
         <div class="contact-info-panel">
-            <div>
-                <h3>Contact Info</h3>
-                <p>ፎቶግራፊ ስራ ለማስያዝ ቅጹን ይሙሉ ወይም ከታች ባሉት አድራሻዎቻችን ቀጥታ ያግኙን።</p>
-            </div>
-            
+            <div><h3>Contact Info</h3><p>ፎቶግራፊ ስራ ለማስያዝ ቅጹን ይሙሉ ወይም ያግኙን።</p></div>
             <div class="info-details">
-                <div class="info-item">
-                    <span>📍 Address</span>
-                    <span>Bahir Dar, Ethiopia</span>
-                </div>
-                <div class="info-item">
-                    <span>📞 Phone</span>
-                    <span>+251 918 12 60 94</span>
-                </div>
-                <div class="info-item">
-                    <span>✉️ Email</span>
-                    <span>wasa.pictures@gmail.com</span>
-                </div>
+                <div class="info-item"><span>📍 Address</span><span>Bahir Dar, Ethiopia</span></div>
+                <div class="info-item"><span>📞 Phone</span><span>+251 918 12 60 94</span></div>
             </div>
             <div style="font-size: 0.8rem; opacity: 0.5;">© 2026 Wasa Pictures</div>
         </div>
-        
         <div class="booking-form-panel">
             <h3>Book a Session</h3>
             <form id="bookingForm" onsubmit="handleBooking(event)">
-                <div class="form-group">
-                    <label for="clientName">Your Name</label>
-                    <input type="text" id="clientName" placeholder="Abebe Bikila" required>
-                </div>
-                <div class="form-group">
-                    <label for="clientPhone">Phone Number</label>
-                    <input type="tel" id="clientPhone" placeholder="0911......" required>
-                </div>
+                <div class="form-group"><label for="clientName">Your Name</label><input type="text" id="clientName" required></div>
+                <div class="form-group"><label for="clientPhone">Phone Number</label><input type="tel" id="clientPhone" required></div>
                 <div class="form-group">
                     <label for="eventType">Event Type</label>
                     <select id="eventType">
                         <option value="Wedding">Wedding</option>
                         <option value="Birth Day">Birth Day</option>
                         <option value="Kiristina">Kiristina</option>
-                        <option value="Other">Other Session</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="eventDate">Event Date</label>
-                    <input type="date" id="eventDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="clientMessage">Special Requests / Message</label>
-                    <textarea id="clientMessage" placeholder="Tell me more about your event..."></textarea>
-                </div>
+                <div class="form-group"><label for="eventDate">Event Date</label><input type="date" id="eventDate" required></div>
+                <div class="form-group"><label for="clientMessage">Message</label><textarea id="clientMessage"></textarea></div>
                 <button id="submitBookingBtn" type="submit" style="background-color: #e73c7e;">Send Booking Request 🚀</button>
             </form>
         </div>
     </div>
 </div>
 
-<div id="imageModal" class="image-modal">
-    <button class="close-modal-btn" onclick="closeImage()">✕</button>
-    <img id="modalImg" class="modal-content" src="" alt="Full View">
-</div>
+<div id="imageModal" class="image-modal"><button class="close-modal-btn" onclick="closeImage()">✕</button><img id="modalImg" class="modal-content" src=""></div>
 
 <div class="container">
     <header>
-        <div class="header-left">
-            <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
-            <h1>Wasa Pictures</h1>
-        </div>
-        <div class="header-right">
-            <button class="open-booking-btn" onclick="toggleBookingModal()">Book Now 📸</button>
-            <div id="statusBadge" class="status-badge">
-                <span class="status-dot"></span>
-                <span id="statusText">Checking...</span>
-            </div>
-        </div>
+        <div class="header-left"><button class="hamburger-btn" onclick="toggleMenu()">☰</button><h1>Wasa Pictures</h1></div>
+        <div class="header-right"><button class="open-booking-btn" onclick="toggleBookingModal()">Book Now 📸</button><div id="statusBadge" class="status-badge"><span class="status-dot"></span><span id="statusText">Checking...</span></div></div>
     </header>
-
     <div class="filter-container">
         <button class="filter-btn active" onclick="filterGallery('All', this)">All</button>
         <button class="filter-btn" onclick="filterGallery('Wedding', this)">Wedding</button>
         <button class="filter-btn" onclick="filterGallery('Birth Day', this)">Birth Day</button>
         <button class="filter-btn" onclick="filterGallery('Kiristina', this)">Kiristina</button>
     </div>
-
-    <div class="gallery-panel">
-        <h2>Gallery Items <span id="photoCount" class="photo-count">0 items</span></h2>
-        
-        <div id="galleryGrid" class="gallery-grid">
-            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text-1"></div><div class="skeleton-text-2"></div><div class="shimmer"></div></div>
-            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text-1"></div><div class="skeleton-text-2"></div><div class="shimmer"></div></div>
-            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text-1"></div><div class="skeleton-text-2"></div><div class="shimmer"></div></div>
-        </div>
-    </div>
+    <div class="gallery-panel"><h2>Gallery Items <span id="photoCount" class="photo-count">0 items</span></h2><div id="galleryGrid" class="gallery-grid"></div></div>
 </div>
 
 <script>
     const API_BASE_URL = window.location.origin;
-    let allPhotos = []; 
-    let currentFilter = "All";
-
-    function toggleMenu() {
-        document.getElementById('sidebarMenu').classList.toggle('open');
-        document.getElementById('sidebarOverlay').classList.toggle('show');
-    }
-
-    function toggleBookingModal() {
-        document.getElementById('bookingModal').classList.toggle('show');
-    }
-
-    function openImage(url) {
-        document.getElementById('modalImg').src = url;
-        document.getElementById('imageModal').classList.add('show');
-    }
-
-    function closeImage() {
-        document.getElementById('imageModal').classList.remove('show');
-    }
-
+    let allPhotos = [];
+    function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
+    function toggleBookingModal() { document.getElementById('bookingModal').classList.toggle('show'); }
+    function openImage(url) { document.getElementById('modalImg').src = url; document.getElementById('imageModal').classList.add('show'); }
+    function closeImage() { document.getElementById('imageModal').classList.remove('show'); }
+    
     async function checkStatus() {
         const badge = document.getElementById('statusBadge');
         const text = document.getElementById('statusText');
         try {
             const res = await fetch(`${API_BASE_URL}/photos`);
-            if(res.ok) {
-                badge.classList.add('online');
-                text.innerText = "Online";
-                if(allPhotos.length === 0) loadPhotos();
-            }
-        } catch (err) {
-            badge.classList.remove('online');
-            text.innerText = "Offline";
-        }
+            if(res.ok) { badge.classList.add('online'); text.innerText = "Online"; if(allPhotos.length === 0) loadPhotos(); }
+        } catch (err) { badge.classList.remove('online'); text.innerText = "Offline"; }
     }
 
     async function loadPhotos() {
-        try {
-            const res = await fetch(`${API_BASE_URL}/photos`);
-            allPhotos = await res.json();
-            renderGallery();
-        } catch (err) {
-            console.error(err);
-        }
+        try { const res = await fetch(`${API_BASE_URL}/photos`); allPhotos = await res.json(); renderGallery(); } catch (err) { console.error(err); }
     }
 
     function filterGallery(category, buttonElement) {
-        currentFilter = category;
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         buttonElement.classList.add('active');
-        renderGallery();
+        const filtered = category === "All" ? allPhotos : allPhotos.filter(p => p.category === category);
+        renderGallery(filtered);
     }
 
-    function renderGallery() {
+    function renderGallery(data = allPhotos) {
         const grid = document.getElementById('galleryGrid');
-        const countSpan = document.getElementById('photoCount');
+        document.getElementById('photoCount').innerText = `${data.length} items`;
         grid.innerHTML = "";
-
-        const filtered = currentFilter === "All" ? allPhotos : allPhotos.filter(p => p.category === currentFilter);
-        countSpan.innerText = `${filtered.length} item${filtered.length !== 1 ? 's' : ''}`;
-
-        if (filtered.length === 0) {
-            grid.innerHTML = `<p style="color:white; text-align:center; grid-column: 1/-1; padding: 20px;">No items found in this category.</p>`;
-            return;
-        }
-
-        filtered.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'photo-card';
+        if(data.length === 0) { grid.innerHTML = "<p style='color:white; text-align:center; grid-column:1/-1;'>No photos found.</p>"; return; }
+        data.forEach(p => {
+            const card = document.createElement('div'); card.className = 'photo-card';
             card.innerHTML = `
-                <div class="photo-img-wrapper" onclick="openImage('${p.url}')">
-                    <img src="${p.url}" alt="${p.title}" onerror="this.src='https://placehold.co/400x300?text=Error+Loading'">
-                </div>
+                <div class="photo-img-wrapper" onclick="openImage('${p.url}')"><img src="${p.url}"></div>
                 <div class="photo-info">
-                    <div class="photo-details">
-                        <div class="photo-title">${p.title}</div>
-                        <div class="photo-tag">${p.category || 'Wedding'}</div>
-                    </div>
+                    <div class="photo-details"><div class="photo-title">${p.title}</div><div class="photo-tag">${p.category}</div></div>
                     <button class="delete-btn" onclick="deletePhoto('${p.url}')">Delete</button>
-                </div>
-            `;
+                </div>`;
             grid.appendChild(card);
         });
     }
@@ -356,103 +196,47 @@
         const title = document.getElementById('titleInput').value.trim();
         const category = document.getElementById('categoryInput').value;
         const fileInput = document.getElementById('fileInput');
-
-        if(!password) { alert("Please enter the Admin Password!"); return; }
-        if(!title || fileInput.files.length === 0) { alert("Please enter a title and select a file!"); return; }
-
+        if(!password || !title || fileInput.files.length === 0) { alert("All fields are required!"); return; }
         const file = fileInput.files[0];
-
         try {
             const res = await fetch(`${API_BASE_URL}/photos`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": file.type,
-                    "X-Photo-Title": title,
-                    "X-Photo-Category": category,
-                    "X-Photo-Filename": file.name,
-                    "X-Admin-Password": password
-                },
-                body: file
+                method: "POST", headers: { "Content-Type": file.type, "X-Photo-Title": title, "X-Photo-Category": category, "X-Admin-Password": password }, body: file
             });
-
-            if(res.ok) {
-                document.getElementById('titleInput').value = "";
-                fileInput.value = "";
-                toggleMenu();
-                loadPhotos();
-            } else if(res.status === 401) {
-                alert("Wrong Password! Access Denied.");
-            } else {
-                alert("Upload failed.");
-            }
-        } catch (err) {
-            alert("Connection error.");
-        }
+            if(res.ok) { document.getElementById('titleInput').value = ""; fileInput.value = ""; toggleMenu(); loadPhotos(); } 
+            else { alert("Upload failed. Check password."); }
+        } catch (err) { alert("Connection error."); }
     }
 
     async function deletePhoto(url) {
-        const password = prompt("Enter Admin Password to delete this photo:");
+        const password = prompt("Enter Admin Password:");
         if(!password) return;
-
         try {
             const res = await fetch(`${API_BASE_URL}/photos`, {
-                method: "DELETE",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "X-Admin-Password": password
-                },
-                body: JSON.stringify({ url: url })
+                method: "DELETE", headers: { "Content-Type": "application/json", "X-Admin-Password": password }, body: JSON.stringify({ url })
             });
-
-            if(res.ok) {
-                loadPhotos();
-            } else if(res.status === 401) {
-                alert("Wrong Password! Cannot delete.");
-            } else {
-                alert("Delete failed.");
-            }
-        } catch (err) {
-            alert("Request failed.");
-        }
+            if(res.ok) loadPhotos(); else alert("Failed to delete.");
+        } catch (err) { alert("Error occurred."); }
     }
 
     async function handleBooking(event) {
         event.preventDefault();
         const btn = document.getElementById('submitBookingBtn');
-        
         const name = document.getElementById('clientName').value;
         const phone = document.getElementById('clientPhone').value;
         const type = document.getElementById('eventType').value;
         const date = document.getElementById('eventDate').value;
         const message = document.getElementById('clientMessage').value;
-
-        btn.innerText = "Sending Request... ⏳";
-        btn.disabled = true;
-
+        btn.innerText = "Sending... ⏳"; btn.disabled = true;
         try {
             const res = await fetch(`${API_BASE_URL}/bookings`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, phone, type, date, message })
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, phone, type, date, message })
             });
-
-            if(res.ok) {
-                alert(`እናመሰግናለን ${name}! የያዝከው ቀጠሮ ቀጥታ ወደ ዋሳ ቴሌግራም ደርሷል! 🚀`);
-                document.getElementById('bookingForm').reset();
-                toggleBookingModal(); 
-            } else {
-                alert("ፊድባክ መላክ አልተቻለም።");
-            }
-        } catch (err) {
-            alert("ከሰርቨሩ ጋር መገናኘት አልተቻለም።");
-        } finally {
-            btn.innerText = "Send Booking Request 🚀";
-            btn.disabled = false;
-        }
+            if(res.ok) { alert(`እናመሰግናለን ${name}! ቀጠሮው ተልኳል።`); document.getElementById('bookingForm').reset(); toggleBookingModal(); }
+            else { alert("Failed."); }
+        } catch (err) { alert("Error."); }
+        finally { btn.innerText = "Send Booking Request 🚀"; btn.disabled = false; }
     }
-
-    checkStatus();
-    setInterval(checkStatus, 4000);
+    checkStatus(); setInterval(checkStatus, 5000);
 </script>
 </body>
 </html>

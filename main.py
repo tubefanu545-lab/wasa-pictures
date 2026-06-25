@@ -1,5 +1,7 @@
 import os
 import httpx
+import cloudinary
+import cloudinary.uploader
 from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,7 +10,7 @@ from typing import List, Optional
 
 app = FastAPI()
 
-# CORS ፈቃድ መስጫ (Frontend እና Backend በቀላሉ እንዲገናኙ)
+# CORS ፈቃድ መስጫ
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,12 +19,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 🟢 ያንተ የቴሌግራም ቦት መረጃዎች እዚህ ገብተዋል
+# 🟢 1. የቴሌግራም መረጃዎች
 TOKEN = "8847929104:AAHe7yo9CcWm3V1ysjfHnHUtCy7YnE1LbPg"
 CHAT_ID = "6809358372"
-ADMIN_PASSWORD = "wasa"  # የአስተዳዳሪ ፎቶ መጫኛ ፓስዋርድ
+ADMIN_PASSWORD = "wasa"
 
-# የፎቶዎች ማከማቻ ዳታቤዝ (ጊዜያዊ በሜሞሪ)
+# 🟢 2. ያንተ የ Cloudinary መረጃዎች እዚህ ገብተዋል
+cloudinary.config( 
+  cloud_name = "dytizzbeg", 
+  api_key = "239362398592469", 
+  api_secret = "<INSERT_API_SECRET>",  # <-- እዚህ ላይ እውነተኛውን API Secret አስገባ
+  secure = True
+)
+
+# የፎቶዎች ማከማቻ ሊስት
 photos_db = []
 
 class BookingData(BaseModel):
@@ -35,21 +45,19 @@ class BookingData(BaseModel):
 class DeleteRequest(BaseModel):
     url: str
 
-# 1. ዌብሳይቱ ሲከፈት HTML ፋይሉን እንዲያሳይ ማድረግ
 @app.get("/", response_class=HTMLResponse)
 def read_root():
     html_path = os.path.join(os.path.dirname(__file__), "index.html")
     if os.path.exists(html_path):
         with open(html_path, "r", encoding="utf-8") as f:
             return f.read()
-    return "<h1>index.html file not found! Please check the filename.</h1>"
+    return "<h1>index.html file not found!</h1>"
 
-# 2. የፎቶዎች ሊስት ማግኛ
 @app.get("/photos")
 def get_photos():
     return photos_db
 
-# 3. ፎቶ መጫኛ (Upload)
+# 📸 እውነተኛ ፎቶ ወደ Cloudinary መጫኛ
 @app.post("/photos")
 async def upload_photo(
     request: Request,
@@ -62,18 +70,25 @@ async def upload_photo(
     
     photo_bytes = await request.body()
     
-    # ሰርቨር ላይ ለጊዜው ፎቶ በፋይል ከማስቀመጥ ይልቅ በሊንክ እንዲሰራ የሚያደርግ
-    mock_url = f"https://picsum.photos/800/600?random={len(photos_db) + 1}"
-    
-    new_photo = {
-        "title": x_photo_title,
-        "category": x_photo_category,
-        "url": mock_url
-    }
-    photos_db.append(new_photo)
-    return new_photo
+    try:
+        # ፎቶውን በቀጥታ ወደ Cloudinary መጫን
+        upload_result = cloudinary.uploader.upload(
+            photo_bytes,
+            folder="wasa_pictures"
+        )
+        secure_url = upload_result.get("secure_url")
+        
+        new_photo = {
+            "title": x_photo_title,
+            "category": x_photo_category,
+            "url": secure_url
+        }
+        photos_db.append(new_photo)
+        return new_photo
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Cloudinary upload failed: {str(e)}")
 
-# 4. ፎቶ መሰረዣ (Delete)
 @app.delete("/photos")
 def delete_photo(req: DeleteRequest, x_admin_password: str = Header(None)):
     if x_admin_password != ADMIN_PASSWORD:
@@ -83,7 +98,6 @@ def delete_photo(req: DeleteRequest, x_admin_password: str = Header(None)):
     photos_db = [p for p in photos_db if p["url"] != req.url]
     return {"message": "Deleted successfully"}
 
-# 5. የቡኪንግ መልእክት ወደ ቴሌግራም መላኪያ
 @app.post("/bookings")
 async def create_booking(booking: BookingData):
     text = (
