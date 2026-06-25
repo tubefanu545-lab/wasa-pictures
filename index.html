@@ -147,8 +147,11 @@
 </div>
 
 <script>
-    // 💡 ፋይሉንም ሊንኩንም በአንድ ላይ የሚያገናኝ አዲሱ መስመር
     const API_BASE_URL = "https://wasa-pictures.onrender.com";
+    
+    // 💡 ያንተ የ Cloudinary መረጃዎች ለቀጥታ ጭነት
+    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dytizzbeg/image/upload";
+    const CLOUDINARY_UPLOAD_PRESET = "ml_default"; // በ Cloudinary ላይ Unsigned ሆኖ የተዘጋጀው ፕሪሴት
 
     let allPhotos = [];
     function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
@@ -193,6 +196,7 @@
         });
     }
 
+    // 🔥 አዲሱ እና ጠንካራው ፎቶ መጫኛ ዘዴ
     async function uploadPhoto() {
         const password = document.getElementById('passwordInput').value;
         const title = document.getElementById('titleInput').value.trim();
@@ -201,36 +205,53 @@
         const uploadBtn = document.getElementById('uploadBtn');
         
         if(!password || !title || fileInput.files.length === 0) { alert("All fields are required!"); return; }
+        if(password !== "wasa") { alert("Wrong admin password!"); return; }
         
         const file = fileInput.files[0];
-        const formData = new FormData();
-        formData.append("file", file);
-
         uploadBtn.innerText = "Uploading... ⏳";
         uploadBtn.disabled = true;
 
         try {
+            // 1. መጀመሪያ ፎቶውን በቀጥታ ከብሮውዘሩ ወደ Cloudinary መጫን
+            const cloudinaryData = new FormData();
+            cloudinaryData.append("file", file);
+            cloudinaryData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+            cloudinaryData.append("folder", "wasa_pictures");
+
+            const cloudRes = await fetch(CLOUDINARY_URL, {
+                method: "POST",
+                body: cloudinaryData
+            });
+
+            if (!cloudRes.ok) {
+                throw new Error("Cloudinary storage direct upload failed.");
+            }
+
+            const cloudJson = await cloudRes.json();
+            const secureUrl = cloudJson.secure_url;
+
+            // 2. የተገኘውን ሊንክ ብቻ ለ Render ሰርቨራችን ዳታቤዝ አሳውቆ ማስቀመጥ
             const res = await fetch(`${API_BASE_URL}/photos`, {
                 method: "POST", 
                 headers: { 
+                    "Content-Type": "application/json",
                     "X-Photo-Title": title, 
                     "X-Photo-Category": category, 
                     "X-Admin-Password": password 
                 }, 
-                body: formData
+                body: JSON.stringify({ url: secureUrl })
             });
+
             if(res.ok) { 
                 document.getElementById('titleInput').value = ""; 
                 fileInput.value = ""; 
                 toggleMenu(); 
                 loadPhotos(); 
-            } 
-            else { 
-                const errData = await res.json();
-                alert("Upload failed: " + (errData.detail || "Check password")); 
+            } else { 
+                alert("Failed to save to database."); 
             }
         } catch (err) { 
-            alert("Connection error."); 
+            alert("Error: " + err.message); 
         } finally {
             uploadBtn.innerText = "Upload Photo";
             uploadBtn.disabled = false;
