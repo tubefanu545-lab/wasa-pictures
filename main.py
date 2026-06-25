@@ -2,7 +2,7 @@ import os
 import httpx
 import cloudinary
 import cloudinary.uploader
-from fastapi import FastAPI, HTTPException, Header, UploadFile, File
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -10,7 +10,7 @@ from typing import List, Optional
 
 app = FastAPI()
 
-# CORS ፈቃድ መስጫ - ከየትኛውም ቦታ ጥያቄዎችን እንዲቀበል ያደርገዋል
+# CORS ፈቃድ መስጫ - ከሁሉም ቦታ ጥያቄ እንዲቀበል
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,12 +19,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 🟢 1. የቴሌግራም መረጃዎች
+# 🟢 የቴሌግራም መረጃዎች
 TOKEN = "8847929104:AAHe7yo9CcWm3V1ysjfHnHUtCy7YnE1LbPg"
 CHAT_ID = "6809358372"
 ADMIN_PASSWORD = "wasa"
 
-# 🟢 2. ያንተ የ Cloudinary መረጃዎች (ሙሉ በሙሉ ገብተዋል)
+# 🟢 Cloudinary መረጃዎች
 cloudinary.config( 
   cloud_name = "dytizzbeg", 
   api_key = "239362398592469", 
@@ -32,8 +32,12 @@ cloudinary.config(
   secure = True
 )
 
-# የፎቶዎች ማከማቻ ሊስት
+# የፎቶዎች ማከማቻ ዳታቤዝ (ሊስት)
 photos_db = []
+
+# ከብሮውዘሩ የሚመጣውን የፎቶ መረጃ መቀበያ (JSON Schema)
+class PhotoData(BaseModel):
+    url: str
 
 class BookingData(BaseModel):
     name: str
@@ -57,10 +61,10 @@ def read_root():
 def get_photos():
     return photos_db
 
-# 📸 የተስተካከለ ፎቶ መጫኛ (UploadFile በመጠቀም)
+# 🔥 የተስተካከለው ዋናው አፕሎድ (አሁን የፎቶውን ሊንክ በ JSON ይቀበላል)
 @app.post("/photos")
-async def upload_photo(
-    file: UploadFile = File(...),
+async def save_photo_url(
+    photo: PhotoData,
     x_photo_title: str = Header(None),
     x_photo_category: str = Header(None),
     x_admin_password: str = Header(None)
@@ -68,24 +72,13 @@ async def upload_photo(
     if x_admin_password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Unauthorized")
     
-    try:
-        photo_bytes = await file.read()
-        upload_result = cloudinary.uploader.upload(
-            photo_bytes,
-            folder="wasa_pictures"
-        )
-        secure_url = upload_result.get("secure_url")
-        
-        new_photo = {
-            "title": x_photo_title,
-            "category": x_photo_category,
-            "url": secure_url
-        }
-        photos_db.append(new_photo)
-        return new_photo
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Cloudinary upload failed: {str(e)}")
+    new_photo = {
+        "title": x_photo_title,
+        "category": x_photo_category,
+        "url": photo.url
+    }
+    photos_db.append(new_photo)
+    return new_photo
 
 @app.delete("/photos")
 def delete_photo(req: DeleteRequest, x_admin_password: str = Header(None)):
