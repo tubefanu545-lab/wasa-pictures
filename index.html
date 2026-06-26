@@ -147,61 +147,27 @@
 </div>
 
 <script>
-    // 🟢 የ Render ሰርቨርህ አድራሻ
     const API_BASE_URL = "https://wasa-pictures.onrender.com";
-
     let allPhotos = [];
 
-    // የጎን ሜኑን መክፈቻና መዝጊያ
-    function toggleMenu() { 
-        document.getElementById('sidebarMenu').classList.toggle('open'); 
-        document.getElementById('sidebarOverlay').classList.toggle('show'); 
-    }
-
-    // የቀጠሮ ማስያዣ ፎርም (Modal) መክፈቻና መዝጊያ
-    function toggleBookingModal() { 
-        document.getElementById('bookingModal').classList.toggle('show'); 
-    }
-
-    // ፎቶ ሲነካ በትልቅ ስክሪን ማሳያ
-    function openImage(url) { 
-        document.getElementById('modalImg').src = url; 
-        document.getElementById('imageModal').classList.add('show'); 
-    }
-
-    function closeImage() { 
-        document.getElementById('imageModal').classList.remove('show'); 
-    }
+    function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
+    function toggleBookingModal() { document.getElementById('bookingModal').classList.toggle('show'); }
+    function openImage(url) { document.getElementById('modalImg').src = url; document.getElementById('imageModal').classList.add('show'); }
+    function closeImage() { document.getElementById('imageModal').classList.remove('show'); }
     
-    // ሰርቨሩ ኦንላይን መሆኑን በየ 5 ሰከንዱ ማረጋገጫ
     async function checkStatus() {
         const badge = document.getElementById('statusBadge');
         const text = document.getElementById('statusText');
         try {
             const res = await fetch(`${API_BASE_URL}/photos`);
-            if(res.ok) { 
-                badge.classList.add('online'); 
-                text.innerText = "Online"; 
-                if(allPhotos.length === 0) loadPhotos(); 
-            }
-        } catch (err) { 
-            badge.classList.remove('online'); 
-            text.innerText = "Offline"; 
-        }
+            if(res.ok) { badge.classList.add('online'); text.innerText = "Online"; if(allPhotos.length === 0) loadPhotos(); }
+        } catch (err) { badge.classList.remove('online'); text.innerText = "Offline"; }
     }
 
-    // ሁሉንም ፎቶዎች ከሰርቨር ላይ መጫኛ
     async function loadPhotos() {
-        try { 
-            const res = await fetch(`${API_BASE_URL}/photos`); 
-            allPhotos = await res.json(); 
-            renderGallery(); 
-        } catch (err) { 
-            console.error("Error loading photos:", err); 
-        }
+        try { const res = await fetch(`${API_BASE_URL}/photos`); allPhotos = await res.json(); renderGallery(); } catch (err) { console.error(err); }
     }
 
-    // በካቴጎሪ (Wedding, Birthday...) ለይቶ ማሳያ
     function filterGallery(category, buttonElement) {
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         buttonElement.classList.add('active');
@@ -209,34 +175,23 @@
         renderGallery(filtered);
     }
 
-    // ፎቶዎቹን በስክሪኑ ላይ አደራጅቶ ማሳያ ክንውን
     function renderGallery(data = allPhotos) {
         const grid = document.getElementById('galleryGrid');
         document.getElementById('photoCount').innerText = `${data.length} items`;
         grid.innerHTML = "";
-        
-        if(data.length === 0) { 
-            grid.innerHTML = "<p style='color:white; text-align:center; grid-column:1/-1;'>No photos found.</p>"; 
-            return; 
-        }
-        
+        if(data.length === 0) { grid.innerHTML = "<p style='color:white; text-align:center; grid-column:1/-1;'>No photos found.</p>"; return; }
         data.forEach(p => {
-            const card = document.createElement('div'); 
-            card.className = 'photo-card';
+            const card = document.createElement('div'); card.className = 'photo-card';
             card.innerHTML = `
                 <div class="photo-img-wrapper" onclick="openImage('${p.url}')"><img src="${p.url}"></div>
                 <div class="photo-info">
-                    <div class="photo-details">
-                        <div class="photo-title">${p.title}</div>
-                        <div class="photo-tag">${p.category}</div>
-                    </div>
+                    <div class="photo-details"><div class="photo-title">${p.title}</div><div class="photo-tag">${p.category}</div></div>
                     <button class="delete-btn" onclick="deletePhoto('${p.url}')">Delete</button>
                 </div>`;
             grid.appendChild(card);
         });
     }
 
-    // ⚡ 100% አስተማማኙ የ Base64 ፎቶ አፕሎድ ማድረጊያ ፋንክሽን
     async function uploadPhoto() {
         const password = document.getElementById('passwordInput').value;
         const title = document.getElementById('titleInput').value.trim();
@@ -244,28 +199,18 @@
         const fileInput = document.getElementById('fileInput');
         const uploadBtn = document.getElementById('uploadBtn');
         
-        // አስፈላጊ ነገሮች መሞላታቸውን ቼክ ማድረግ
-        if(!password || !title || fileInput.files.length === 0) { 
-            alert("All fields are required!"); 
-            return; 
-        }
-        if(password !== "wasa") { 
-            alert("Wrong admin password!"); 
-            return; 
-        }
+        if(!password || !title || fileInput.files.length === 0) { alert("All fields are required!"); return; }
+        if(password !== "wasa") { alert("Wrong admin password!"); return; }
         
         const file = fileInput.files[0];
         uploadBtn.innerText = "Uploading... ⏳";
         uploadBtn.disabled = true;
 
-        // ፎቶውን ወደ ረጅም ጽሑፍ (Base64) መቀየር መጀመር
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = async function () {
             const base64Image = reader.result;
-
             try {
-                // ለፓይተን (Render) ሰርቨር በ JSON መልክ መላክ
                 const res = await fetch(`${API_BASE_URL}/photos`, {
                     method: "POST", 
                     headers: { 
@@ -281,7 +226,7 @@
                     document.getElementById('titleInput').value = ""; 
                     fileInput.value = ""; 
                     toggleMenu(); 
-                    loadPhotos(); // ጋለሪውን በራሱ Refresh ያደርገዋል
+                    loadPhotos(); 
                 } else { 
                     alert("Failed to save to database."); 
                 }
@@ -294,26 +239,17 @@
         };
     }
 
-    // ፎቶዎችን ከጋለሪ ላይ ማጥፊያ
     async function deletePhoto(url) {
-        const password = prompt("Enter Admin Password to delete:");
+        const password = prompt("Enter Admin Password:");
         if(!password) return;
         try {
             const res = await fetch(`${API_BASE_URL}/photos`, {
-                method: "DELETE", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-Admin-Password": password 
-                }, 
-                body: JSON.stringify({ url })
+                method: "DELETE", headers: { "Content-Type": "application/json", "X-Admin-Password": password }, body: JSON.stringify({ url })
             });
             if(res.ok) loadPhotos(); else alert("Failed to delete.");
-        } catch (err) { 
-            alert("Error occurred while deleting."); 
-        }
+        } catch (err) { alert("Error occurred."); }
     }
 
-    // የቴሌግራም ቀጠሮ ማስያዣ መልእክት መላኪያ
     async function handleBooking(event) {
         event.preventDefault();
         const btn = document.getElementById('submitBookingBtn');
@@ -322,34 +258,17 @@
         const type = document.getElementById('eventType').value;
         const date = document.getElementById('eventDate').value;
         const message = document.getElementById('clientMessage').value;
-        
-        btn.innerText = "Sending... ⏳"; 
-        btn.disabled = true;
-        
+        btn.innerText = "Sending... ⏳"; btn.disabled = true;
         try {
             const res = await fetch(`${API_BASE_URL}/bookings`, {
-                method: "POST", 
-                headers: { "Content-Type": "application/json" }, 
-                body: JSON.stringify({ name, phone, type, date, message })
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, phone, type, date, message })
             });
-            if(res.ok) { 
-                alert(`እናመሰግናለን ${name}! ቀጠሮው በተሳካ ሁኔታ ተልኳል።`); 
-                document.getElementById('bookingForm').reset(); 
-                toggleBookingModal(); 
-            } else { 
-                alert("Booking failed. Please try again."); 
-            }
-        } catch (err) { 
-            alert("Server error occurred."); 
-        } finally { 
-            btn.innerText = "Send Booking Request 🚀"; 
-            btn.disabled = false; 
-        }
+            if(res.ok) { alert(`እናመሰግናለን ${name}! ቀጠሮው ተልኳል።`); document.getElementById('bookingForm').reset(); toggleBookingModal(); }
+            else { alert("Failed."); }
+        } catch (err) { alert("Error."); }
+        finally { btn.innerText = "Send Booking Request 🚀"; btn.disabled = false; }
     }
-
-    // ድረ-ገጹ እንደተከፈተ ስራ መጀመርያ ጥሪዎች
-    checkStatus(); 
-    setInterval(checkStatus, 5000); // በየ 5 ሰከንዱ ሰርቨሩን ይፈትሻል
+    checkStatus(); setInterval(checkStatus, 5000);
 </script>
 </body>
 </html>
