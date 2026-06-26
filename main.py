@@ -7,10 +7,11 @@ from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
+from supabase import create_client, Client
 
 app = FastAPI()
 
-# 🟢 CORS ፈቃድ - ከሁሉም ቦታ (ከብሮውዘርህ) የሚመጣን ጥያቄ ለመቀበል
+# 🟢 CORS ፈቃድ - ከሁሉም ቦታ የሚመጡ ጥያቄዎችን ለመቀበል
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 🟢 ያንተ የቴሌግራም መረጃዎች
+# 🟢 ያንተ የቴሌግራም እና አስተዳዳሪ መረጃዎች
 TOKEN = "8847929104:AAHe7yo9CcWm3V1ysjfHnHUtCy7YnE1LbPg"
 CHAT_ID = "6809358372"
 ADMIN_PASSWORD = "wasa"
@@ -32,10 +33,12 @@ cloudinary.config(
   secure = True
 )
 
-# የፎቶዎች ጊዜያዊ ማከማቻ (ዳታቤዝ)
-photos_db = []
+# 🟢 ያንተ የራሱ የ Supabase PostgreSQL ዳታቤዝ ማገናኛ (ቋሚ ማከማቻ)
+SUPABASE_URL = "https://xubmrxlqtzglnnthvckr.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1Ym1yeGxxdHpnbG5udGh2Y2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzAyNDEsImV4cCI6MjA5ODA0NjI0MX0.z871T5FzR8GKGpOeilmq_QIl3PykSX3gJToh6-O5LXo"
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ከብሮውዘሩ በ Base64 (በጽሑፍ መልክ) የሚመጣውን ፎቶ መቀበያ ፎርማት
+# ከብሮውዘሩ በ Base64 የሚመጣውን ፎቶ መቀበያ ፎርማት
 class PhotoData(BaseModel):
     url: str
 
@@ -57,11 +60,16 @@ def read_root():
             return f.read()
     return "<h1>index.html file not found!</h1>"
 
+# 🔄 ፎቶዎችን ከ Supabase SQL ዳታቤዝ ውስጥ ለቅሞ ማውጫ (Refresh ቢደረግም አይጠፉም!)
 @app.get("/photos")
 def get_photos():
-    return photos_db
+    try:
+        response = supabase.table("photos").select("*").execute()
+        return response.data
+    except Exception as e:
+        return []
 
-# 🔥 100% አስተማማኙ የፎቶ አፕሎድ መቀበያ
+# 💾 ፎቶዎችን ወደ Cloudinary ሰቅሎ ሊንኩን SQL ዳታቤዝ ውስጥ ማስቀመጫ
 @app.post("/photos")
 async def save_photo_url(
     photo: PhotoData,
@@ -73,33 +81,33 @@ async def save_photo_url(
         raise HTTPException(status_code=401, detail="Unauthorized")
     
     try:
-        # ብሮውዘሩ የላከውን የ Base64 ጽሑፍ በቀጥታ ወደ Cloudinary ሰቅሎ ሊንክ ማውጫ
-        upload_result = cloudinary.uploader.upload(
-            photo.url,
-            folder="wasa_gallery"
-        )
+        # 1. ፎቶውን ወደ Cloudinary መጫን
+        upload_result = cloudinary.uploader.upload(photo.url, folder="wasa_gallery")
         secure_url = upload_result.get("secure_url")
         
-        # የተገኘውን የ Cloudinary ሊንክ በዳታቤዙ ውስጥ ማስቀመጥ
+        # 2. ሊንኩን በSupabase SQL ዳታቤዝ ውስጥ በቋሚነት መጻፍ
         new_photo = {
             "title": x_photo_title,
             "category": x_photo_category,
             "url": secure_url
         }
-        photos_db.append(new_photo)
+        supabase.table("photos").insert(new_photo).execute()
         return new_photo
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Cloudinary upload failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database or Cloudinary failed: {str(e)}")
 
+# ❌ ፎቶውን ከSQL ዳታቤዝ ውስጥ ማጥፊያ
 @app.delete("/photos")
 def delete_photo(req: DeleteRequest, x_admin_password: str = Header(None)):
     if x_admin_password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Unauthorized")
     
-    global photos_db
-    photos_db = [p for p in photos_db if p["url"] != req.url]
-    return {"message": "Deleted successfully"}
+    try:
+        supabase.table("photos").delete().eq("url", req.url).execute()
+        return {"message": "Deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/bookings")
 async def create_booking(booking: BookingData):
