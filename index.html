@@ -59,7 +59,7 @@
         <div class="form-group"><input type="text" id="titleInput" placeholder="Title"></div>
         <div class="form-group"><select id="categoryInput"><option value="Wedding">Wedding</option><option value="Birth Day">Birth Day</option><option value="Kiristina">Kiristina</option></select></div>
         <div class="form-group"><input type="file" id="fileInput" accept="image/*"></div>
-        <button onclick="uploadPhoto()" style="width:100%; padding:12px; background:#00796b; color:white; border:none; border-radius:8px; margin-top:15px; font-weight:600; cursor:pointer;">Upload Photo</button>
+        <button id="uploadBtn" onclick="uploadPhoto()" style="width:100%; padding:12px; background:#00796b; color:white; border:none; border-radius:8px; margin-top:15px; font-weight:600; cursor:pointer;">Upload Photo</button>
     </div>
 </div>
 
@@ -122,15 +122,41 @@
             grid.appendChild(card);
         });
     }
+    
+    // 🛠 በትክክል የሚሰራው እና ስህተቱ የተስተካከለው የፎቶ መስቀያ ተግባር
     async function uploadPhoto() {
-        const password = document.getElementById('passwordInput').value, title = document.getElementById('titleInput').value.trim(), category = document.getElementById('categoryInput').value, fileInput = document.getElementById('fileInput');
+        const password = document.getElementById('passwordInput').value, title = document.getElementById('titleInput').value.trim(), category = document.getElementById('categoryInput').value, fileInput = document.getElementById('fileInput'), btn = document.getElementById('uploadBtn');
         if(!password || !title || fileInput.files.length === 0) { alert("All fields required!"); return; }
-        const reader = new FileReader(); reader.readAsDataURL(fileInput.files[0]);
+        
+        btn.innerText = "Uploading... ⏳";
+        btn.disabled = true;
+        
+        const reader = new FileReader(); 
+        reader.readAsDataURL(fileInput.files[0]);
         reader.onload = async function (e) {
             try {
-                const res = await fetch(`${API_BASE_URL}/photos`, { method: "POST", mode: "cors", headers: { "Content-Type": "application/json", "X-Photo-Title": title, "X-Photo-Category": category, "X-Admin-Password": password }, body: JSON.stringify({ url: e.target.result }) });
-                if(res.ok) { toggleMenu(); loadPhotos(); } else { alert("Failed."); }
-            } catch (err) { alert("Error."); }
+                const res = await fetch(`${API_BASE_URL}/photos`, { 
+                    method: "POST", 
+                    mode: "cors", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-Photo-Title": title, 
+                        "X-Photo-Category": category, 
+                        "X-Admin-Password": password 
+                    }, 
+                    body: JSON.stringify({ url: e.target.result }) 
+                });
+                if(res.ok) { 
+                    document.getElementById('titleInput').value = "";
+                    fileInput.value = "";
+                    toggleMenu(); 
+                    loadPhotos(); 
+                } else { alert("Upload failed. Check password or table properties."); }
+            } catch (err) { alert("Server error occurred."); }
+            finally {
+                btn.innerText = "Upload Photo";
+                btn.disabled = false;
+            }
         };
     }
     async function deletePhoto(url) { const password = prompt("Admin Password:"); if(!password) return; try { const res = await fetch(`${API_BASE_URL}/photos`, { method: "DELETE", mode: "cors", headers: { "Content-Type": "application/json", "X-Admin-Password": password }, body: JSON.stringify({ url }) }); if(res.ok) loadPhotos(); } catch (err) { } }
