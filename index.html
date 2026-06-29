@@ -51,8 +51,11 @@
         .open-booking-btn { background-color: #e73c7e; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; border: none; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .open-booking-btn:hover { background-color: #b9265f; }
         
-        .filter-container { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; flex-wrap: wrap; }
-        .filter-btn { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s; }
+        /* ↔️ የካቴጎሪዎች ወደ ጎን መደርደሪያ የተስተካከለ CSS */
+        .filter-container { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
+        .filter-container::-webkit-scrollbar { height: 5px; }
+        .filter-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
+        .filter-btn { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
         .filter-btn.active, .filter-btn:hover { background: var(--primary-color); border-color: var(--primary-color); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         
         .sidebar { position: fixed; top: 0; left: -380px; width: 350px; height: 100%; background-color: var(--card-bg); backdrop-filter: blur(10px); box-shadow: 4px 0 20px rgba(0,0,0,0.3); z-index: 1000; transition: left 0.3s ease; padding: 30px; overflow-y: auto; }
@@ -141,7 +144,7 @@
         <h2>Admin Authentication</h2>
         <div class="form-group"><label for="passwordInput">Admin Password</label><input type="password" id="passwordInput" placeholder="Enter password" oninput="checkAdminView()"></div>
         
-        <!-- 📊 Dashboard Popup Controller (ፓስወርድ ሲገባ ብቻ የሚከፈት ውብ በተን) -->
+        <!-- 📊 Dashboard Popup Controller -->
         <div id="adminDashboardBox" class="dashboard-box" style="display: none;">
             <p style="font-size: 0.85rem; margin-bottom: 5px; opacity: 0.8;">Password Correct! Click below:</p>
             <button class="dashboard-btn" onclick="toggleDashboardModal(true)">📊 Open Bookings Dashboard</button>
@@ -162,7 +165,7 @@
     </div>
 </div>
 
-<!-- 🏛️ Dashboard Modal (ቀጠሮዎች ፖፕ አፕ ሆነው የሚወጡበት አዲሱ ክፍል) -->
+<!-- 🏛️ Dashboard Modal -->
 <div id="dashboardModal" class="dashboard-modal">
     <div class="dashboard-popup-content">
         <button class="close-popup" onclick="toggleDashboardModal(false)">✕</button>
@@ -213,6 +216,7 @@
             <div id="statusBadge" class="status-badge"><span class="status-dot"></span><span id="statusText">Checking...</span></div>
         </div>
     </header>
+    <!-- ↔️ የተስተካከለው የካቴጎሪ መደርደሪያ -->
     <div class="filter-container">
         <button class="filter-btn active" onclick="filterGallery('All', this)">All</button>
         <button class="filter-btn" onclick="filterGallery('Wedding', this)">Wedding</button>
@@ -230,7 +234,6 @@
     function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
     function toggleBookingModal() { document.getElementById('bookingModal').classList.toggle('show'); }
     
-    // 📊 Dashboard Popup መቆጣጠሪያ
     function toggleDashboardModal(show) {
         const modal = document.getElementById('dashboardModal');
         if(show) {
@@ -244,7 +247,6 @@
     function openImage(url) { document.getElementById('modalImg').src = url; document.getElementById('imageModal').classList.add('show'); }
     function closeImage() { document.getElementById('imageModal').classList.remove('show'); }
     
-    // 🌗 Dark Mode መቆጣጠሪያ
     function toggleTheme() {
         const body = document.body;
         const btn = document.querySelector('.theme-toggle-btn');
@@ -258,13 +260,11 @@
         }
     }
 
-    // የድሮ የDark mode ምርጫን መጫኛ
     if(localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
         document.querySelector('.theme-toggle-btn').innerHTML = "☀️ Light";
     }
 
-    // ፓስወርድ ሲሞላ Dashboard Open ማድረጊያ በተን ማሳያ
     function checkAdminView() {
         const pass = document.getElementById('passwordInput').value;
         const dashBox = document.getElementById('adminDashboardBox');
@@ -275,7 +275,6 @@
         }
     }
 
-    // በፖፕ አፕ ውስጥ ቀጠሮዎችን መደርደሪያ
     function renderAdminDashboard() {
         const listDiv = document.getElementById('appointmentsList');
         if(localBookings.length === 0) {
