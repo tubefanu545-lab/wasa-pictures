@@ -7,8 +7,9 @@
     <style>
         :root { --primary-color: #00796b; --text-color: #222222; --border-color: rgba(255,255,255,0.2); }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { color: var(--text-color); padding: 25px 15px; min-height: 100vh; position: relative; background: #e94b79; }
-        .video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; pointer-events: none; opacity: 0.85; }
+        /* 📱 በስልክም በኮምፒውተርም ቪዲዮው ሳይቆረጥ መሃል ላይ ሙሉ ስክሪን እንዲሆን ማድረጊያ */
+        body { color: var(--text-color); padding: 25px 15px; min-height: 100vh; position: relative; background: #e94b79; overflow-x: hidden; }
+        .video-bg { position: fixed; top: 50%; left: 50%; min-width: 100vw; min-height: 100vh; width: auto; height: auto; object-fit: cover; z-index: -1; pointer-events: none; opacity: 0.85; transform: translate(-50%, -50%); }
         .container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 15px 20px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border-radius: 15px; border: 1px solid var(--border-color); }
         .header-left { display: flex; align-items: center; gap: 15px; }
@@ -123,7 +124,6 @@
         });
     }
     
-    // 📸 ትላልቅ ፎቶዎችን አጨቆና አሳንሶ የሚልክ አዲሱ ተግባር
     async function uploadPhoto() {
         const password = document.getElementById('passwordInput').value, title = document.getElementById('titleInput').value.trim(), category = document.getElementById('categoryInput').value, fileInput = document.getElementById('fileInput'), btn = document.getElementById('uploadBtn');
         if(!password || !title || fileInput.files.length === 0) { alert("All fields required!"); return; }
@@ -138,7 +138,6 @@
             const img = new Image();
             img.src = event.target.result;
             img.onload = async function () {
-                // 📐 ፎቶውን ማሳረሻ ካንቫስ (Max Width: 1200px)
                 const canvas = document.createElement('canvas');
                 let width = img.width, height = img.height, max_size = 1200;
                 if (width > height && width > max_size) { height *= max_size / width; width = max_size; }
@@ -148,7 +147,6 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 
-                // 🗜 ፎቶውን በ 70% ጥራት ማጨቅ (መጠኑን በጣም ይቀንሰዋል)
                 const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
                 
                 btn.innerText = "Uploading... 🚀";
