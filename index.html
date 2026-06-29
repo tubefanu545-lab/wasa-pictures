@@ -34,19 +34,35 @@
         .photo-title { font-weight: 600; font-size: 1.05rem; color: #333; }
         .photo-tag { font-size: 0.75rem; color: #00796b; font-weight: 600; margin-top: 2px; }
         .delete-btn { background-color: #e53935; color: white; border: none; padding: 5px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; }
-        .sidebar { position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: #ffffff; box-shadow: 4px 0 15px rgba(0,0,0,0.2); z-index: 1000; transition: left 0.3s ease; padding: 25px; }
+        .sidebar { position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: #ffffff; box-shadow: 4px 0 15px rgba(0,0,0,0.2); z-index: 1000; transition: left 0.3s ease; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; }
         .sidebar.open { left: 0; }
-        .close-btn { float: right; background: none; border: none; font-size: 1.3rem; cursor: pointer; }
+        .close-btn { float: right; background: none; border: none; font-size: 1.3rem; cursor: pointer; text-align: right; width: 100%; }
         .form-group { margin-top: 15px; }
         .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; display: none; }
         .overlay.show { display: block; }
         
-        /* 🚨 የፖፕ አፕ መውጫ (✕) በተን ስታይል */
+        /* 📸 Image Modal & Booking Modals */
         .image-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; justify-content: center; align-items: center; }
         .image-modal.show { display: flex; }
         .modal-content { max-width: 90%; max-height: 85%; border-radius: 8px; }
         .modal-close-btn { position: absolute; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.3); border: none; color: white; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); z-index: 2001; }
+
+        /* ✨ አዲስ የሚያምር ፖፕ አፕ ዲዛይን ለ ቀጠሮ መሙያ እና ዳሽቦርድ */
+        .custom-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 2500; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .custom-popup.show { display: flex; }
+        .popup-box { background: white; width: 100%; max-width: 500px; padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .popup-close { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #666; }
+        .popup-box h3 { margin-bottom: 20px; font-size: 1.5rem; color: #00796b; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        .popup-btn { width: 100%; padding: 12px; background: #cc2b5e; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 1rem; margin-top: 15px; transition: 0.2s; }
+        .popup-btn:hover { background: #a81d4a; }
+        
+        /* 📅 Appointment Table */
+        .appt-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .appt-item { background: #f9f9f9; padding: 15px; border-radius: 12px; border-left: 5px solid #00796b; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .appt-item p { margin-bottom: 4px; font-size: 0.95rem; }
+        .appt-item strong { color: #333; }
     </style>
 </head>
 <body>
@@ -57,29 +73,55 @@
 
 <div id="sidebarOverlay" class="overlay" onclick="toggleMenu()"></div>
 <div id="sidebarMenu" class="sidebar">
-    <button class="close-btn" onclick="toggleMenu()">✕</button>
-    <div style="margin-top: 40px;">
-        <h2>Admin Panel</h2>
-        <div class="form-group"><input type="password" id="passwordInput" placeholder="Password"></div>
-        <div class="form-group"><input type="text" id="titleInput" placeholder="Title"></div>
-        <div class="form-group"><select id="categoryInput"><option value="Wedding">Wedding</option><option value="Birth Day">Birth Day</option><option value="Kiristina">Kiristina</option></select></div>
-        <div class="form-group"><input type="file" id="fileInput" accept="image/*"></div>
-        <button id="uploadBtn" onclick="uploadPhoto()" style="width:100%; padding:12px; background:#00796b; color:white; border:none; border-radius:8px; margin-top:15px; font-weight:600; cursor:pointer;">Upload Photo</button>
+    <div>
+        <button class="close-btn" onclick="toggleMenu()">✕</button>
+        <div style="margin-top: 20px;">
+            <h2>Admin Panel</h2>
+            <div class="form-group"><input type="password" id="passwordInput" placeholder="Password"></div>
+            <div class="form-group"><input type="text" id="titleInput" placeholder="Title"></div>
+            <div class="form-group"><select id="categoryInput"><option value="Wedding">Wedding</option><option value="Birth Day">Birth Day</option><option value="Kiristina">Kiristina</option></select></div>
+            <div class="form-group"><input type="file" id="fileInput" accept="image/*"></div>
+            <button id="uploadBtn" onclick="uploadPhoto()" style="width:100%; padding:12px; background:#00796b; color:white; border:none; border-radius:8px; margin-top:15px; font-weight:600; cursor:pointer;">Upload Photo</button>
+        </div>
     </div>
+    <!-- 📅 በሃምበርገር ሜኑ ስር የተቀመጠው አዲሱ የዳሽቦርድ በተን -->
+    <button onclick="openAdminDashboard()" style="width:100%; padding:12px; background:#333; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; margin-bottom:20px;">View Appointments 📅</button>
 </div>
 
-<!-- ✕ መውጫ በተን የተጨመረበት የፖፕ አፕ መዋቅር -->
+<!-- ✕ መውጫ በተን ያለው የፎቶ ፖፕ አፕ -->
 <div id="imageModal" class="image-modal">
     <button class="modal-close-btn" onclick="closeImage()">✕</button>
     <img id="modalImg" class="modal-content" src="" onclick="event.stopPropagation()">
+</div>
+
+<!-- 📝 አዲስ የሚያምር የቀጠሮ መሙያ ፖፕ አፕ (Book Now) -->
+<div id="bookingPopup" class="custom-popup" onclick="closeBookingPopup()">
+    <div class="popup-box" onclick="event.stopPropagation()">
+        <button class="popup-close" onclick="closeBookingPopup()">✕</button>
+        <h3>Book an Appointment 📸</h3>
+        <div class="form-group"><label>Full Name</label><input type="text" id="bName" placeholder="Enter your name"></div>
+        <div class="form-group"><label>Phone Number</label><input type="tel" id="bPhone" placeholder="Enter phone number"></div>
+        <div class="form-group"><label>Event Address / Note</label><input type="text" id="bAddress" placeholder="Event location or details"></div>
+        <button class="popup-btn" id="sendBookBtn" onclick="submitBooking()">Send Appointment</button>
+    </div>
+</div>
+
+<!-- 📅 አዲስ የኤድሚን ቀጠሮዎች ማሳያ ዳሽቦርድ ፖፕ አፕ -->
+<div id="dashboardPopup" class="custom-popup" onclick="closeDashboardPopup()">
+    <div class="popup-box" style="max-width: 600px;" onclick="event.stopPropagation()">
+        <button class="popup-close" onclick="closeDashboardPopup()">✕</button>
+        <h3>Appointment Dashboard 📅</h3>
+        <div id="appointmentsContainer" class="appt-list">
+            <p style="text-align:center; color:#666;">Loading appointments...</p>
+        </div>
+    </div>
 </div>
 
 <div class="container">
     <header>
         <div class="header-left"><button class="hamburger-btn" onclick="toggleMenu()">☰</button><h1>Wasa Pictures</h1></div>
         <div class="header-right">
-            <!-- 📸 የቲክ ቶክ፣ ቴሌግራም ወይም ስልክ ሊንክ እዚህ ማስገባት ትችላለህ -->
-            <button class="open-booking-btn" onclick="goToBooking()">Book Now 📸</button>
+            <button class="open-booking-btn" onclick="openBookingPopup()">Book Now 📸</button>
             <div class="status-badge"><span class="status-dot"></span><span>Online</span></div>
         </div>
     </header>
@@ -101,19 +143,80 @@
     const API_BASE_URL = "https://wasa-pictures.onrender.com";
     let allPhotos = [];
     
-    // 📞 Book Now ሲነካ ወዴት መሄድ እንዳለበት መቆጣጠሪያ
-    function goToBooking() {
-        // እዚህ ላይ የራስህን የቴሌግራም ዩዘርኔም መተካት ትችላለህ ብሮ!
-        window.open("https://t.me/your_telegram_username", "_blank");
-    }
-
     function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
     function openImage(url) { document.getElementById('modalImg').src = url; document.getElementById('imageModal').classList.add('show'); }
     function closeImage() { document.getElementById('imageModal').classList.remove('show'); }
-    
-    // ከምስሉ ውጭ ጥቁሩ ቦታ ላይ ሲነካም እንዲወጣ ማድረጊያ
     document.getElementById('imageModal').addEventListener('click', closeImage);
 
+    /* 📝 Booking Pop-up Functions */
+    function openBookingPopup() { document.getElementById('bookingPopup').classList.add('show'); }
+    function closeBookingPopup() { document.getElementById('bookingPopup').classList.remove('show'); }
+    
+    async function submitBooking() {
+        const name = document.getElementById('bName').value.trim();
+        const phone = document.getElementById('bPhone').value.trim();
+        const address = document.getElementById('bAddress').value.trim();
+        const btn = document.getElementById('sendBookBtn');
+
+        if(!name || !phone) { alert("Please fill in Name and Phone Number!"); return; }
+        btn.innerText = "Sending... ⏳"; btn.disabled = true;
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/appointments`, {
+                method: "POST",
+                mode: "cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, phone, address })
+            });
+            if(res.ok) {
+                alert("🎉 Appointment sent successfully! We will contact you soon.");
+                document.getElementById('bName').value = "";
+                document.getElementById('bPhone').value = "";
+                document.getElementById('bAddress').value = "";
+                closeBookingPopup();
+            } else { alert("Failed to send appointment."); }
+        } catch (err) { alert("Server connection error."); }
+        finally { btn.innerText = "Send Appointment"; btn.disabled = false; }
+    }
+
+    /* 📅 Admin Dashboard Functions */
+    function closeDashboardPopup() { document.getElementById('dashboardPopup').classList.remove('show'); }
+    
+    async function openAdminDashboard() {
+        const password = prompt("Enter Admin Password to view appointments:");
+        if(!password) return;
+        
+        toggleMenu(); // ዘጋነው ሜኑውን
+        document.getElementById('dashboardPopup').classList.add('show');
+        const container = document.getElementById('appointmentsContainer');
+        container.innerHTML = `<p style="text-align:center; color:#666;">Fetching data... ⏳</p>`;
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/appointments`, {
+                method: "GET",
+                mode: "cors",
+                headers: { "X-Admin-Password": password }
+            });
+            if(res.status === 401 || res.status === 403) {
+                alert("Incorrect password!"); closeDashboardPopup(); return;
+            }
+            const appts = await res.json();
+            container.innerHTML = "";
+            if(appts.length === 0) { container.innerHTML = `<p style="text-align:center; color:#666;">No appointments found.</p>`; return; }
+            
+            appts.forEach(a => {
+                const item = document.createElement('div'); item.className = 'appt-item';
+                item.innerHTML = `
+                    <p><strong>Name:</strong> ${a.name}</p>
+                    <p><strong>Phone:</strong> <a href="tel:${a.phone}">${a.phone}</a></p>
+                    <p><strong>Address/Note:</strong> ${a.address || 'N/A'}</p>
+                `;
+                container.appendChild(item);
+            });
+        } catch(err) { container.innerHTML = `<p style="text-align:center; color:red;">Error connecting to server.</p>`; }
+    }
+
+    /* 🖼 Gallery Core Functions */
     async function loadPhotos() {
         try { 
             const res = await fetch(`${API_BASE_URL}/photos`, { mode: "cors" }); 
@@ -147,9 +250,7 @@
         const password = document.getElementById('passwordInput').value, title = document.getElementById('titleInput').value.trim(), category = document.getElementById('categoryInput').value, fileInput = document.getElementById('fileInput'), btn = document.getElementById('uploadBtn');
         if(!password || !title || fileInput.files.length === 0) { alert("All fields required!"); return; }
         
-        btn.innerText = "Processing Image... ⏳";
-        btn.disabled = true;
-        
+        btn.innerText = "Processing Image... ⏳"; btn.disabled = true;
         const file = fileInput.files[0];
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -162,36 +263,22 @@
                 if (width > height && width > max_size) { height *= max_size / width; width = max_size; }
                 else if (height > max_size) { width *= max_size / height; height = max_size; }
                 canvas.width = width; canvas.height = height;
-                
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
-                
                 const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
                 
                 btn.innerText = "Uploading... 🚀";
                 try {
                     const res = await fetch(`${API_BASE_URL}/photos`, { 
-                        method: "POST", 
-                        mode: "cors", 
-                        headers: { 
-                            "Content-Type": "application/json", 
-                            "X-Photo-Title": title, 
-                            "X-Photo-Category": category, 
-                            "X-Admin-Password": password 
-                        }, 
+                        method: "POST", mode: "cors", 
+                        headers: { "Content-Type": "application/json", "X-Photo-Title": title, "X-Photo-Category": category, "X-Admin-Password": password }, 
                         body: JSON.stringify({ url: compressedBase64 }) 
                     });
                     if(res.ok) { 
-                        document.getElementById('titleInput').value = "";
-                        fileInput.value = "";
-                        toggleMenu(); 
-                        loadPhotos(); 
+                        document.getElementById('titleInput').value = ""; fileInput.value = ""; toggleMenu(); loadPhotos(); 
                     } else { alert("Upload failed. Check your admin password."); }
                 } catch (err) { alert("Server error connection."); }
-                finally {
-                    btn.innerText = "Upload Photo";
-                    btn.disabled = false;
-                }
+                finally { btn.innerText = "Upload Photo"; btn.disabled = false; }
             };
         };
     }
