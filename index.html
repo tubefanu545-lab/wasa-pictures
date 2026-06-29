@@ -123,40 +123,59 @@
         });
     }
     
-    // 🛠 በትክክል የሚሰራው እና ስህተቱ የተስተካከለው የፎቶ መስቀያ ተግባር
+    // 📸 ትላልቅ ፎቶዎችን አጨቆና አሳንሶ የሚልክ አዲሱ ተግባር
     async function uploadPhoto() {
         const password = document.getElementById('passwordInput').value, title = document.getElementById('titleInput').value.trim(), category = document.getElementById('categoryInput').value, fileInput = document.getElementById('fileInput'), btn = document.getElementById('uploadBtn');
         if(!password || !title || fileInput.files.length === 0) { alert("All fields required!"); return; }
         
-        btn.innerText = "Uploading... ⏳";
+        btn.innerText = "Processing Image... ⏳";
         btn.disabled = true;
         
-        const reader = new FileReader(); 
-        reader.readAsDataURL(fileInput.files[0]);
-        reader.onload = async function (e) {
-            try {
-                const res = await fetch(`${API_BASE_URL}/photos`, { 
-                    method: "POST", 
-                    mode: "cors", 
-                    headers: { 
-                        "Content-Type": "application/json", 
-                        "X-Photo-Title": title, 
-                        "X-Photo-Category": category, 
-                        "X-Admin-Password": password 
-                    }, 
-                    body: JSON.stringify({ url: e.target.result }) 
-                });
-                if(res.ok) { 
-                    document.getElementById('titleInput').value = "";
-                    fileInput.value = "";
-                    toggleMenu(); 
-                    loadPhotos(); 
-                } else { alert("Upload failed. Check password or table properties."); }
-            } catch (err) { alert("Server error occurred."); }
-            finally {
-                btn.innerText = "Upload Photo";
-                btn.disabled = false;
-            }
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = async function () {
+                // 📐 ፎቶውን ማሳረሻ ካንቫስ (Max Width: 1200px)
+                const canvas = document.createElement('canvas');
+                let width = img.width, height = img.height, max_size = 1200;
+                if (width > height && width > max_size) { height *= max_size / width; width = max_size; }
+                else if (height > max_size) { width *= max_size / height; height = max_size; }
+                canvas.width = width; canvas.height = height;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // 🗜 ፎቶውን በ 70% ጥራት ማጨቅ (መጠኑን በጣም ይቀንሰዋል)
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                
+                btn.innerText = "Uploading... 🚀";
+                try {
+                    const res = await fetch(`${API_BASE_URL}/photos`, { 
+                        method: "POST", 
+                        mode: "cors", 
+                        headers: { 
+                            "Content-Type": "application/json", 
+                            "X-Photo-Title": title, 
+                            "X-Photo-Category": category, 
+                            "X-Admin-Password": password 
+                        }, 
+                        body: JSON.stringify({ url: compressedBase64 }) 
+                    });
+                    if(res.ok) { 
+                        document.getElementById('titleInput').value = "";
+                        fileInput.value = "";
+                        toggleMenu(); 
+                        loadPhotos(); 
+                    } else { alert("Upload failed. Check your admin password."); }
+                } catch (err) { alert("Server error connection."); }
+                finally {
+                    btn.innerText = "Upload Photo";
+                    btn.disabled = false;
+                }
+            };
         };
     }
     async function deletePhoto(url) { const password = prompt("Admin Password:"); if(!password) return; try { const res = await fetch(`${API_BASE_URL}/photos`, { method: "DELETE", mode: "cors", headers: { "Content-Type": "application/json", "X-Admin-Password": password }, body: JSON.stringify({ url }) }); if(res.ok) loadPhotos(); } catch (err) { } }
