@@ -5,444 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wasa Pictures</title>
     <style>
-        :root {
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --primary-color: #00796b;
-            --primary-hover: #004d40;
-            --text-color: #222222;
-            --text-light: #555555;
-            --border-color: rgba(0,0,0,0.1);
-            --header-bg: rgba(255, 255, 255, 0.2);
-            --body-bg: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-        }
-        
-        /* 🌙 Dark Mode Styles */
-        body.dark-mode {
-            --card-bg: rgba(30, 30, 30, 0.9);
-            --text-color: #f5f5f5;
-            --text-light: #aaaaaa;
-            --border-color: rgba(255,255,255,0.1);
-            --header-bg: rgba(0, 0, 0, 0.4);
-            --body-bg: linear-gradient(-45deg, #121212, #1c1c1c, #2c3e50, #0f2027);
-        }
-
+        :root { --card-bg: rgba(255, 255, 255, 0.85); --primary-color: #00796b; --primary-hover: #004d40; --text-color: #222222; --text-light: #555555; --border-color: rgba(0,0,0,0.1); --header-bg: rgba(255, 255, 255, 0.2); --body-bg: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); }
+        body.dark-mode { --card-bg: rgba(30, 30, 30, 0.9); --text-color: #f5f5f5; --text-light: #aaaaaa; --border-color: rgba(255,255,255,0.1); --header-bg: rgba(0, 0, 0, 0.4); --body-bg: linear-gradient(-45deg, #121212, #1c1c1c, #2c3e50, #0f2027); }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; transition: background 0.3s, color 0.3s; }
         body { color: var(--text-color); padding: 40px 20px; min-height: 100vh; background: var(--body-bg); background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .container { max-width: 1200px; margin: 0 auto; }
-        
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.2); padding: 15px 25px; background: var(--header-bg); backdrop-filter: blur(10px); border-radius: 12px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
         .header-right { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
         .hamburger-btn { background: none; border: none; font-size: 1.8rem; color: #ffffff; cursor: pointer; }
         h1 { font-size: 2.5rem; color: #ffffff; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        
-        /* 🌗 Dark Mode Button Design inside Sidebar */
         .theme-toggle-container { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.05); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color); }
         body.dark-mode .theme-toggle-container { background: rgba(255,255,255,0.05); }
-        .theme-toggle-btn { background: var(--primary-color); border: none; color: white; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 6px; width: auto; }
-        .theme-toggle-btn:hover { background: var(--primary-hover); }
-
+        .theme-toggle-btn { background: var(--primary-color); border: none; color: white; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: 600; width: auto; }
         .status-badge { display: flex; align-items: center; gap: 8px; font-weight: 600; padding: 8px 16px; border-radius: 20px; background: #ffebee; color: #c62828; }
         .status-badge.online { background: #e8f5e9; color: #2e7d32; }
         .status-dot { width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; }
         .status-badge.online .status-dot { background-color: #2e7d32; box-shadow: 0 0 8px #4caf50; }
-        
         .open-booking-btn { background-color: #e73c7e; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; border: none; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .open-booking-btn:hover { background-color: #b9265f; }
-        
-        /* ↔️ የካቴጎሪዎች ወደ ጎን መደርደሪያ የተስተካከለ CSS */
-        .filter-container { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
-        .filter-container::-webkit-scrollbar { height: 5px; }
-        .filter-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
-        .filter-btn { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
-        .filter-btn.active, .filter-btn:hover { background: var(--primary-color); border-color: var(--primary-color); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        
+        .filter-container { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
+        .filter-btn { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 0.95rem; white-space: nowrap; flex-shrink: 0; }
+        .filter-btn.active, .filter-btn:hover { background: var(--primary-color); border-color: var(--primary-color); }
         .sidebar { position: fixed; top: 0; left: -380px; width: 350px; height: 100%; background-color: var(--card-bg); backdrop-filter: blur(10px); box-shadow: 4px 0 20px rgba(0,0,0,0.3); z-index: 1000; transition: left 0.3s ease; padding: 30px; overflow-y: auto; }
         .sidebar.open { left: 0; }
         .close-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-light); cursor: pointer; float: right; }
         .sidebar-section { margin-top: 40px; margin-bottom: 30px; }
         .sidebar h2 { margin-bottom: 20px; font-size: 1.3rem; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
-        
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 999; display: none; }
         .overlay.show { display: block; }
-        
-        /* 📊 Dashboard Popup Button Design inside Sidebar */
         .dashboard-box { background: rgba(0,0,0,0.05); padding: 12px; border-radius: 8px; margin-bottom: 25px; border: 1px solid var(--border-color); }
-        body.dark-mode .dashboard-box { background: rgba(255,255,255,0.05); }
         .dashboard-btn { background-color: #3f51b5; font-size: 0.95rem; padding: 10px; margin-top: 5px; font-weight: 600; }
-        .dashboard-btn:hover { background-color: #2c387e; }
-        
-        /* 🏛️ Dashboard Modal/Popup Styles */
-        .dashboard-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 1600; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .dashboard-modal.show { display: flex; }
+        .dashboard-modal, .booking-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 1500; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .dashboard-modal.show, .booking-modal.show { display: flex; }
         .dashboard-popup-content { background: var(--card-bg); color: var(--text-color); border-radius: 16px; width: 100%; max-width: 600px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.4); position: relative; max-height: 85vh; overflow-y: auto; }
-        
-        /* 📋 Appointments List Styles */
         .appointment-card { background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 12px; font-size: 0.9rem; }
-        body.dark-mode .appointment-card { background: rgba(255,255,255,0.03); }
         .appointment-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 6px; color: var(--primary-color); }
         .app-actions { display: flex; gap: 8px; margin-top: 10px; }
         .app-btn { padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; border: none; color: white; width: auto; }
-        .app-approve { background: #2e7d32; }
-        .app-delete { background: #c62828; }
-
-        .booking-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 1500; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .booking-modal.show { display: flex; }
-        .booking-content { background: var(--card-bg); color: var(--text-color); border-radius: 16px; width: 100%; max-width: 750px; display: grid; grid-template-columns: 1fr 1.2fr; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3); position: relative; }
+        .booking-content { background: var(--card-bg); color: var(--text-color); border-radius: 16px; width: 100%; max-width: 750px; display: grid; grid-template-columns: 1fr 1.2fr; overflow: hidden; position: relative; }
         .contact-info-panel { background: linear-gradient(135deg, #00796b, #004d40); color: white; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; }
-        .contact-info-panel h3 { font-size: 1.6rem; margin-bottom: 15px; }
-        .contact-info-panel p { font-size: 0.9rem; opacity: 0.85; line-height: 1.5; }
-        .info-details { margin-top: 30px; display: flex; flex-direction: column; gap: 20px; }
-        .info-item { display: flex; flex-direction: column; gap: 4px; }
-        .info-item span:first-child { font-weight: bold; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; }
         .booking-form-panel { padding: 40px 30px; overflow-y: auto; max-height: 85vh; }
-        .booking-form-panel h3 { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 20px; }
         .close-popup { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 1.4rem; color: #888; cursor: pointer; }
-        
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.02); color: var(--text-color); font-size: 0.95rem; }
-        body.dark-mode .form-group input, body.dark-mode .form-group select, body.dark-mode .form-group textarea { background: rgba(255,255,255,0.05); }
-        
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.02); color: var(--text-color); }
         button { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        button:hover { background-color: var(--primary-hover); }
-        
-        .gallery-panel h2 { margin-bottom: 20px; font-size: 1.5rem; display: flex; justify-content: space-between; align-items: center; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .gallery-panel h2 { margin-bottom: 20px; font-size: 1.5rem; display: flex; justify-content: space-between; align-items: center; color: #ffffff; }
         .photo-count { font-size: 1rem; color: #ffffff; background: rgba(0, 121, 107, 0.6); padding: 4px 12px; border-radius: 12px; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; margin-bottom: 50px;}
-        
         .photo-card { position: relative; background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.3s; }
         .photo-card:hover { transform: translateY(-8px); }
-        .photo-img-wrapper { width: 100%; height: 200px; background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
+        .photo-img-wrapper { width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
         .photo-card img { width: 100%; height: 100%; object-fit: cover; }
         .photo-info { padding: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px;}
         .photo-details { display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
         .photo-title { font-weight: 600; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .photo-tag { font-size: 0.8rem; color: var(--primary-color); background: rgba(0, 121, 107, 0.1); padding: 2px 8px; border-radius: 10px; width: max-content; font-weight: 600; }
         .delete-btn { background-color: #e53935; color: white; border: none; padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; width: auto; flex-shrink: 0; }
-        
         .image-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 2000; display: none; justify-content: center; align-items: center; }
         .image-modal.show { display: flex; }
         .modal-content { max-width: 90%; max-height: 85%; border-radius: 8px; }
         .close-modal-btn { position: absolute; top: 20px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; }
-        @media (max-width: 650px) { .booking-content { grid-template-columns: 1fr; } .contact-info-panel { padding: 25px; } .header-right { gap: 8px; } }
+        @media (max-width: 650px) { .booking-content { grid-template-columns: 1fr; } .contact-info-panel { padding: 25px; } }
     </style>
 </head>
 <body>
-
 <div id="sidebarOverlay" class="overlay" onclick="toggleMenu()"></div>
 <div id="sidebarMenu" class="sidebar">
     <button class="close-btn" onclick="toggleMenu()">✕</button>
     <div class="sidebar-section">
-        <!-- 🌗 Dark Mode Section inside Hamburger Menu -->
-        <div class="theme-toggle-container">
-            <span style="font-weight: 600; font-size: 0.95rem;">Switch Appearance</span>
-            <button class="theme-toggle-btn" onclick="toggleTheme()">🌙 Dark</button>
-        </div>
-
-        <h2>Admin Authentication</h2>
-        <div class="form-group"><label for="passwordInput">Admin Password</label><input type="password" id="passwordInput" placeholder="Enter password" oninput="checkAdminView()"></div>
-        
-        <!-- 📊 Dashboard Popup Controller -->
-        <div id="adminDashboardBox" class="dashboard-box" style="display: none;">
-            <p style="font-size: 0.85rem; margin-bottom: 5px; opacity: 0.8;">Password Correct! Click below:</p>
-            <button class="dashboard-btn" onclick="toggleDashboardModal(true)">📊 Open Bookings Dashboard</button>
-        </div>
-
-        <h2>Upload Your Image</h2>
-        <div class="form-group"><label for="titleInput">Title</label><input type="text" id="titleInput" placeholder="e.g., Abebe's Wedding"></div>
-        <div class="form-group">
-            <label for="categoryInput">Choose Category</label>
-            <select id="categoryInput">
-                <option value="Wedding">Wedding</option>
-                <option value="Birth Day">Birth Day</option>
-                <option value="Kiristina">Kiristina</option>
-            </select>
-        </div>
-        <div class="form-group"><label for="fileInput">Select Image File</label><input type="file" id="fileInput" accept="image/*"></div>
+        <div class="theme-toggle-container"><span>Appearance</span><button class="theme-toggle-btn" onclick="toggleTheme()">🌙 Dark</button></div>
+        <h2>Admin</h2>
+        <div class="form-group"><input type="password" id="passwordInput" placeholder="Password" oninput="checkAdminView()"></div>
+        <div id="adminDashboardBox" class="dashboard-box" style="display: none;"><button class="dashboard-btn" onclick="toggleDashboardModal(true)">📊 Open Dashboard</button></div>
+        <h2>Upload Image</h2>
+        <div class="form-group"><input type="text" id="titleInput" placeholder="Title"></div>
+        <div class="form-group"><select id="categoryInput"><option value="Wedding">Wedding</option><option value="Birth Day">Birth Day</option><option value="Kiristina">Kiristina</option></select></div>
+        <div class="form-group"><input type="file" id="fileInput" accept="image/*"></div>
         <button id="uploadBtn" onclick="uploadPhoto()">Upload Photo</button>
     </div>
 </div>
-
-<!-- 🏛️ Dashboard Modal -->
 <div id="dashboardModal" class="dashboard-modal">
-    <div class="dashboard-popup-content">
-        <button class="close-popup" onclick="toggleDashboardModal(false)">✕</button>
-        <h3 style="font-size: 1.4rem; color: var(--primary-color); margin-bottom: 15px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">📊 Bookings Dashboard</h3>
-        <div id="appointmentsList">Loading appointments...</div>
-    </div>
+    <div class="dashboard-popup-content"><button class="close-popup" onclick="toggleDashboardModal(false)">✕</button><h3>📊 Bookings Dashboard</h3><div id="appointmentsList">No bookings.</div></div>
 </div>
-
 <div id="bookingModal" class="booking-modal">
     <div class="booking-content">
         <button class="close-popup" onclick="toggleBookingModal()">✕</button>
-        <div class="contact-info-panel">
-            <div><h3>Contact Info</h3><p>ፎቶግራፊ ስራ ለማስያዝ ቅጹን ይሙሉ ወይም ያግኙን።</p></div>
-            <div class="info-details">
-                <div class="info-item"><span>📍 Address</span><span>Bahir Dar, Ethiopia</span></div>
-                <div class="info-item"><span>📞 Phone</span><span>+251 918 12 60 94</span></div>
-            </div>
-            <div style="font-size: 0.8rem; opacity: 0.5;">© 2026 Wasa Pictures</div>
-        </div>
+        <div class="contact-info-panel"><div><h3>Wasa Pictures</h3><p>ፎቶግራፊ ስራ ለማስያዝ ቅጹን ይሙሉ</p></div></div>
         <div class="booking-form-panel">
             <h3>Book a Session</h3>
             <form id="bookingForm" onsubmit="handleBooking(event)">
-                <div class="form-group"><label for="clientName">Your Name</label><input type="text" id="clientName" required></div>
-                <div class="form-group"><label for="clientPhone">Phone Number</label><input type="tel" id="clientPhone" required></div>
-                <div class="form-group">
-                    <label for="eventType">Event Type</label>
-                    <select id="eventType">
-                        <option value="Wedding">Wedding</option>
-                        <option value="Birth Day">Birth Day</option>
-                        <option value="Kiristina">Kiristina</option>
-                    </select>
-                </div>
-                <div class="form-group"><label for="eventDate">Event Date</label><input type="date" id="eventDate" required></div>
-                <div class="form-group"><label for="clientMessage">Message</label><textarea id="clientMessage"></textarea></div>
-                <button id="submitBookingBtn" type="submit" style="background-color: #e73c7e;">Send Booking Request 🚀</button>
+                <div class="form-group"><input type="text" id="clientName" placeholder="Name" required></div>
+                <div class="form-group"><input type="tel" id="clientPhone" placeholder="Phone" required></div>
+                <div class="form-group"><select id="eventType"><option value="Wedding">Wedding</option><option value="Birth Day">Birth Day</option><option value="Kiristina">Kiristina</option></select></div>
+                <div class="form-group"><input type="date" id="eventDate" required></div>
+                <div class="form-group"><textarea id="clientMessage" placeholder="Message"></textarea></div>
+                <button id="submitBookingBtn" type="submit" style="background-color: #e73c7e;">Send Request 🚀</button>
             </form>
         </div>
     </div>
 </div>
-
 <div id="imageModal" class="image-modal"><button class="close-modal-btn" onclick="closeImage()">✕</button><img id="modalImg" class="modal-content" src=""></div>
-
 <div class="container">
-    <header>
-        <div class="header-left"><button class="hamburger-btn" onclick="toggleMenu()">☰</button><h1>Wasa Pictures</h1></div>
-        <div class="header-right">
-            <button class="open-booking-btn" onclick="toggleBookingModal()">Book Now 📸</button>
-            <div id="statusBadge" class="status-badge"><span class="status-dot"></span><span id="statusText">Checking...</span></div>
-        </div>
-    </header>
-    <!-- ↔️ የተስተካከለው የካቴጎሪ መደርደሪያ -->
-    <div class="filter-container">
-        <button class="filter-btn active" onclick="filterGallery('All', this)">All</button>
-        <button class="filter-btn" onclick="filterGallery('Wedding', this)">Wedding</button>
-        <button class="filter-btn" onclick="filterGallery('Birth Day', this)">Birth Day</button>
-        <button class="filter-btn" onclick="filterGallery('Kiristina', this)">Kiristina</button>
-    </div>
+    <header><div class="header-left"><button class="hamburger-btn" onclick="toggleMenu()">☰</button><h1>Wasa Pictures</h1></div><div class="header-right"><button class="open-booking-btn" onclick="toggleBookingModal()">Book Now 📸</button><div id="statusBadge" class="status-badge"><span class="status-dot"></span><span id="statusText">Checking...</span></div></div></header>
+    <div class="filter-container"><button class="filter-btn active" onclick="filterGallery('All', this)">All</button><button class="filter-btn" onclick="filterGallery('Wedding', this)">Wedding</button><button class="filter-btn" onclick="filterGallery('Birth Day', this)">Birth Day</button><button class="filter-btn" onclick="filterGallery('Kiristina', this)">Kiristina</button></div>
     <div class="gallery-panel"><h2>Gallery Items <span id="photoCount" class="photo-count">0 items</span></h2><div id="galleryGrid" class="gallery-grid"></div></div>
 </div>
-
 <script>
     const API_BASE_URL = "https://wasa-pictures.onrender.com";
-    let allPhotos = [];
-    let localBookings = [];
-
+    let allPhotos = [], localBookings = [];
     function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
     function toggleBookingModal() { document.getElementById('bookingModal').classList.toggle('show'); }
-    
-    function toggleDashboardModal(show) {
-        const modal = document.getElementById('dashboardModal');
-        if(show) {
-            modal.classList.add('show');
-            renderAdminDashboard();
-        } else {
-            modal.classList.remove('show');
-        }
-    }
-
+    function toggleDashboardModal(show) { const modal = document.getElementById('dashboardModal'); if(show) { modal.classList.add('show'); renderAdminDashboard(); } else { modal.classList.remove('show'); } }
     function openImage(url) { document.getElementById('modalImg').src = url; document.getElementById('imageModal').classList.add('show'); }
     function closeImage() { document.getElementById('imageModal').classList.remove('show'); }
-    
     function toggleTheme() {
-        const body = document.body;
-        const btn = document.querySelector('.theme-toggle-btn');
+        const body = document.body, btn = document.querySelector('.theme-toggle-btn');
         body.classList.toggle('dark-mode');
-        if(body.classList.contains('dark-mode')) {
-            btn.innerHTML = "☀️ Light";
-            localStorage.setItem('theme', 'dark');
-        } else {
-            btn.innerHTML = "🌙 Dark";
-            localStorage.setItem('theme', 'light');
-        }
+        if(body.classList.contains('dark-mode')) { btn.innerHTML = "☀️ Light"; localStorage.setItem('theme', 'dark'); }
+        else { btn.innerHTML = "🌙 Dark"; localStorage.setItem('theme', 'light'); }
     }
-
-    if(localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        document.querySelector('.theme-toggle-btn').innerHTML = "☀️ Light";
-    }
-
-    function checkAdminView() {
-        const pass = document.getElementById('passwordInput').value;
-        const dashBox = document.getElementById('adminDashboardBox');
-        if(pass === "wasa") {
-            dashBox.style.display = "block";
-        } else {
-            dashBox.style.display = "none";
-        }
-    }
-
+    if(localStorage.getItem('theme') === 'dark') { document.body.classList.add('dark-mode'); document.querySelector('.theme-toggle-btn').innerHTML = "☀️ Light"; }
+    function checkAdminView() { const pass = document.getElementById('passwordInput').value; document.getElementById('adminDashboardBox').style.display = pass === "wasa" ? "block" : "none"; }
     function renderAdminDashboard() {
         const listDiv = document.getElementById('appointmentsList');
-        if(localBookings.length === 0) {
-            listDiv.innerHTML = "<p style='font-size:0.95rem; opacity:0.7; text-align:center; padding: 20px;'>No recent bookings.</p>";
-            return;
-        }
+        if(localBookings.length === 0) { listDiv.innerHTML = "<p style='text-align:center; padding: 20px;'>No recent bookings.</p>"; return; }
         listDiv.innerHTML = "";
         localBookings.forEach((b, idx) => {
-            const card = document.createElement('div');
-            card.className = 'appointment-card';
-            card.innerHTML = `
-                <div class="appointment-header"><span>${b.name}</span><span>${b.type}</span></div>
-                <div>📞 ስልክ: ${b.phone}</div>
-                <div>📅 ቀን: ${b.date}</div>
-                <div style="font-style:italic; margin-top:5px; color:var(--text-light)">"${b.message || 'No message'}"</div>
-                <div class="app-actions">
-                    <button class="app-btn app-approve" onclick="actionBooking(${idx}, 'Approve')">Approve ✅</button>
-                    <button class="app-btn app-delete" onclick="actionBooking(${idx}, 'Delete')">Delete ❌</button>
-                </div>
-            `;
+            const card = document.createElement('div'); card.className = 'appointment-card';
+            card.innerHTML = `<div class="appointment-header"><span>${b.name}</span><span>${b.type}</span></div><div>📞 ስልክ: ${b.phone}</div><div>📅 ቀን: ${b.date}</div><div style="font-style:italic; margin-top:5px; color:var(--text-light)">"${b.message || ''}"</div><div class="app-actions"><button class="app-btn" style="background:#2e7d32;" onclick="actionBooking(${idx}, 'Approve')">Approve ✅</button><button class="app-btn" style="background:#c62828;" onclick="actionBooking(${idx}, 'Delete')">Delete ❌</button></div>`;
             listDiv.appendChild(card);
         });
     }
-
-    function actionBooking(index, action) {
-        alert(`Booking for ${localBookings[index].name} has been ${action}d!`);
-        if(action === 'Delete') {
-            localBookings.splice(index, 1);
-        }
-        renderAdminDashboard();
-    }
-    
-    async function checkStatus() {
-        const badge = document.getElementById('statusBadge');
-        const text = document.getElementById('statusText');
-        try {
-            const res = await fetch(`${API_BASE_URL}/photos`, { mode: "cors" });
-            if(res.ok) { badge.classList.add('online'); text.innerText = "Online"; if(allPhotos.length === 0) loadPhotos(); }
-        } catch (err) { badge.classList.remove('online'); text.innerText = "Offline"; }
-    }
-
-    async function loadPhotos() {
-        try { 
-            const res = await fetch(`${API_BASE_URL}/photos`, { mode: "cors" }); 
-            allPhotos = await res.json(); 
-            renderGallery(); 
-        } catch (err) { console.error(err); }
-    }
-
-    function filterGallery(category, buttonElement) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        buttonElement.classList.add('active');
-        const filtered = category === "All" ? allPhotos : allPhotos.filter(p => p.category === category);
-        renderGallery(filtered);
-    }
-
+    function actionBooking(index, action) { alert(`Booking for ${localBookings[index].name} has been ${action}d!`); if(action === 'Delete') localBookings.splice(index, 1); renderAdminDashboard(); }
+    async function checkStatus() { const badge = document.getElementById('statusBadge'), text = document.getElementById('statusText'); try { const res = await fetch(`${API_BASE_URL}/photos`, { mode: "cors" }); if(res.ok) { badge.classList.add('online'); text.innerText = "Online"; if(allPhotos.length === 0) loadPhotos(); } } catch (err) { badge.classList.remove('online'); text.innerText = "Offline"; } }
+    async function loadPhotos() { try { const res = await fetch(`${API_BASE_URL}/photos`, { mode: "cors" }); allPhotos = await res.json(); renderGallery(); } catch (err) { console.error(err); } }
+    function filterGallery(category, buttonElement) { document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active')); buttonElement.classList.add('active'); renderGallery(category === "All" ? allPhotos : allPhotos.filter(p => p.category === category)); }
     function renderGallery(data = allPhotos) {
-        const grid = document.getElementById('galleryGrid');
-        document.getElementById('photoCount').innerText = `${data.length} items`;
-        grid.innerHTML = "";
+        const grid = document.getElementById('galleryGrid'); document.getElementById('photoCount').innerText = `${data.length} items`; grid.innerHTML = "";
         if(data.length === 0) { grid.innerHTML = "<p style='color:white; text-align:center; grid-column:1/-1;'>No photos found.</p>"; return; }
         data.forEach(p => {
             const card = document.createElement('div'); card.className = 'photo-card';
-            card.innerHTML = `
-                <div class="photo-img-wrapper" onclick="openImage('${p.url}')"><img src="${p.url}"></div>
-                <div class="photo-info">
-                    <div class="photo-details"><div class="photo-title">${p.title}</div><div class="photo-tag">${p.category}</div></div>
-                    <button class="delete-btn" onclick="deletePhoto('${p.url}')">Delete</button>
-                </div>`;
+            card.innerHTML = `<div class="photo-img-wrapper" onclick="openImage('${p.url}')"><img src="${p.url}"></div><div class="photo-info"><div class="photo-details"><div class="photo-title">${p.title}</div><div class="photo-tag">${p.category}</div></div><button class="delete-btn" onclick="deletePhoto('${p.url}')">Delete</button></div>`;
             grid.appendChild(card);
         });
     }
-
     async function uploadPhoto() {
-        const password = document.getElementById('passwordInput').value;
-        const title = document.getElementById('titleInput').value.trim();
-        const category = document.getElementById('categoryInput').value;
-        const fileInput = document.getElementById('fileInput');
-        const uploadBtn = document.getElementById('uploadBtn');
-        
-        if(!password || !title || fileInput.files.length === 0) { alert("All fields are required!"); return; }
-        if(password !== "wasa") { alert("Wrong admin password!"); return; }
-        
-        const file = fileInput.files[0];
-        uploadBtn.innerText = "Processing & Uploading... ⏳";
-        uploadBtn.disabled = true;
-
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
+        const password = document.getElementById('passwordInput').value, title = document.getElementById('titleInput').value.trim(), category = document.getElementById('categoryInput').value, fileInput = document.getElementById('fileInput'), uploadBtn = document.getElementById('uploadBtn');
+        if(!password || !title || fileInput.files.length === 0) { alert("All fields are required!"); return; } if(password !== "wasa") { alert("Wrong password!"); return; }
+        uploadBtn.innerText = "Uploading... ⏳"; uploadBtn.disabled = true;
+        const reader = new FileReader(); reader.readAsDataURL(fileInput.files[0]);
         reader.onload = function (e) {
-            const img = new Image();
-            img.src = e.target.result;
+            const img = new Image(); img.src = e.target.result;
             img.onload = async function () {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                const MAX_WIDTH = 1280;
-                const MAX_HEIGHT = 1280;
-                let width = img.width;
-                let height = img.height;
-
-                if (width > height) {
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                } else {
-                    if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
-                
-                const base64Image = canvas.toDataURL('image/jpeg', 0.7);
-
+                const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
+                let width = img.width, height = img.height;
+                if (width > height) { if (width > 1280) { height *= 1280 / width; width = 1280; } } else { if (height > 1280) { width *= 1280 / height; height = 1280; } }
+                canvas.width = width; canvas.height = height; ctx.drawImage(img, 0, 0, width, height);
                 try {
-                    const res = await fetch(`${API_BASE_URL}/photos`, {
-                        method: "POST", mode: "cors", 
-                        headers: { 
-                            "Content-Type": "application/json",
-                            "X-Photo-Title": title, "X-Photo-Category": category, "X-Admin-Password": password 
-                        }, 
-                        body: JSON.stringify({ url: base64Image })
-                    });
-
-                    if(res.ok) { 
-                        document.getElementById('titleInput').value = ""; 
-                        fileInput.value = ""; 
-                        toggleMenu(); 
-                        loadPhotos(); 
-                    } else { alert("Failed to save to database."); }
-                } catch (err) { alert("Error: " + err.message); }
-                finally { uploadBtn.innerText = "Upload Photo"; uploadBtn.disabled = false; }
+                    const res = await fetch(`${API_BASE_URL}/photos`, { method: "POST", mode: "cors", headers: { "Content-Type": "application/json", "X-Photo-Title": title, "X-Photo-Category": category, "X-Admin-Password": password }, body: JSON.stringify({ url: canvas.toDataURL('image/jpeg', 0.7) }) });
+                    if(res.ok) { document.getElementById('titleInput').value = ""; fileInput.value = ""; toggleMenu(); loadPhotos(); } else { alert("Failed."); }
+                } catch (err) { alert("Error."); } finally { uploadBtn.innerText = "Upload Photo"; uploadBtn.disabled = false; }
             };
         };
     }
-
-    async function deletePhoto(url) {
-        const password = prompt("Enter Admin Password:");
-        if(!password) return;
-        try {
-            const res = await fetch(`${API_BASE_URL}/photos`, {
-                method: "DELETE", mode: "cors", headers: { "Content-Type": "application/json", "X-Admin-Password": password }, body: JSON.stringify({ url })
-            });
-            if(res.ok) loadPhotos(); else alert("Failed to delete.");
-        } catch (err) { alert("Error occurred."); }
-    }
-
+    async function deletePhoto(url) { const password = prompt("Enter Admin Password:"); if(!password) return; try { const res = await fetch(`${API_BASE_URL}/photos`, { method: "DELETE", mode: "cors", headers: { "Content-Type": "application/json", "X-Admin-Password": password }, body: JSON.stringify({ url }) }); if(res.ok) loadPhotos(); else alert("Failed."); } catch (err) { alert("Error."); } }
     async function handleBooking(event) {
-        event.preventDefault();
-        const btn = document.getElementById('submitBookingBtn');
-        const name = document.getElementById('clientName').value;
-        const phone = document.getElementById('clientPhone').value;
-        const type = document.getElementById('eventType').value;
-        const date = document.getElementById('eventDate').value;
-        const message = document.getElementById('clientMessage').value;
+        event.preventDefault(); const btn = document.getElementById('submitBookingBtn'), name = document.getElementById('clientName').value, phone = document.getElementById('clientPhone').value, type = document.getElementById('eventType').value, date = document.getElementById('eventDate').value, message = document.getElementById('clientMessage').value;
         btn.innerText = "Sending... ⏳"; btn.disabled = true;
         try {
-            const res = await fetch(`${API_BASE_URL}/bookings`, {
-                method: "POST", mode: "cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, phone, type, date, message })
-            });
-            if(res.ok) { 
-                alert(`እናመሰግናለን ${name}! ቀጠሮው ተልኳል።`); 
-                localBookings.push({ name, phone, type, date, message });
-                document.getElementById('bookingForm').reset(); 
-                toggleBookingModal(); 
-            }
-            else { alert("Failed."); }
-        } catch (err) { alert("Error."); }
-        finally { btn.innerText = "Send Booking Request 🚀"; btn.disabled = false; }
+            const res = await fetch(`${API_BASE_URL}/bookings`, { method: "POST", mode: "cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, phone, type, date, message }) });
+            if(res.ok) { alert(`እናመሰግናለን ${name}!`); localBookings.push({ name, phone, type, date, message }); document.getElementById('bookingForm').reset(); toggleBookingModal(); } else { alert("Failed."); }
+        } catch (err) { alert("Error."); } finally { btn.innerText = "Send Request 🚀"; btn.disabled = false; }
     }
     checkStatus(); setInterval(checkStatus, 5000);
 </script>
